@@ -63,7 +63,12 @@ def getLineNo():
     
     return lines
 
+"""
+Adds a new field to the preview
 
+Adds a field name to the top line and the default value to subsequent lines. All lines after the first are checked to find
+the end of the line, allowing the default value to be inserted in the correct place.
+"""
 def addField():
     field = fieldName.get()
     default = fieldDefault.get()
@@ -72,16 +77,18 @@ def addField():
     insertIndex = getEnd(1)
     locationToInsert = '1.' + str(insertIndex)
     preview.insert(locationToInsert, ', ATTRIBUTE_'+field)
-    print(noOfFiles)
+    #Adds the default value to the end of each line except the first
     for each_line in range(noOfFiles):
-        
         lineNo = each_line + 2 #One to account for the line with the field names, one to account for the fact that lines are not zero-indexed
-        print(lineNo)
         insertIndex = getEnd(lineNo)
-        print(str(lineNo) + '.' + str(insertIndex))
         preview.insert(str(lineNo) + '.' + str(insertIndex), ', ' + default)
         
-        
+"""
+Adds all files in a folder to a directory
+
+Uses tkinter fileDialog for the user to specify a directory. All files in this directory are collated into a list, which is then
+iteratively added to each line.
+"""
 def addFiles():
     global noOfFiles
     #Gets the files to add to the preview
@@ -98,8 +105,13 @@ def addFiles():
         noOfFiles += 1
     
     fieldBtn['state']=tk.NORMAL
-    print(fieldBtn.state)
+    submitBtn['state']=tk.NORMAL    
 
+
+def submit():
+    writeFile = open('Metadata.csv', 'w')
+    writeFile.write(preview.get('1.0', tk.END))
+    writeFile.close()
 
 filesBtn = tk.Button(
     text = 'Select Folder',
@@ -111,7 +123,13 @@ filesBtn.pack()
 fieldBtn = tk.Button(
     text = 'Add field',
     command = addField,
-    state='disabled'
+    state = 'disabled'
+    )
+
+submitBtn = tk.Button(
+    text = 'Submit',
+    command = submit,
+    state = 'disabled'
     )
 
 fieldBtn.pack()
@@ -119,5 +137,6 @@ fieldNameLabel.pack()
 fieldName.pack()
 fieldDefaultLabel.pack()
 fieldDefault.pack()
+submitBtn.pack()
 
 window.mainloop()
