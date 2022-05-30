@@ -1,0 +1,82 @@
+import tkinter as tk
+from tkinter import filedialog as fd 
+from os import listdir #import walk instead if files and dirs are important
+from os.path import isfile, join
+
+window = tk.Tk()
+preview = tk.Text()
+fieldName = tk.Entry()
+
+preview.insert('1.0', 'Start by selecting a folder containing the files to be uploaded')
+
+preview.pack()
+
+def addFiles():
+    #Gets the files to add to the preview
+    directoryToAdd = fd.askdirectory()
+    filesToAdd = [file for file in listdir(directoryToAdd) if isfile(join(directoryToAdd, file))]
+    #Adds the files to the preview under the filename column
+    preview.delete('1.0', tk.END)
+    preview.insert('1.0', 'filename \n')
+    lineNo=2
+    for eachFile in filesToAdd:
+        index = str(lineNo) + '.0'
+        preview.insert(index, eachFile)
+        lineNo += 1
+
+def addField():
+    field = fieldName.get()
+    
+
+"""
+Finds the index before the end of the line to determine where to insert new characters
+
+Iterates through the given line, character by character until it finds a '\n' character,
+then returns the index of the character before it
+
+Paranmeters:
+
+    line: Line in the text box to find the index with
+
+Returns:
+
+    index: Index to insert characters into
+"""
+def getEnd(line):
+    completed = False
+    char = 0
+    current = str(line) + '.' + str(char)
+    #Iterates through the line to find the eol character
+    while completed == False:
+        if preview.get(current) == '\n':
+            completed == True
+            return char
+        else:
+            char += 1
+            current = str(line) + '.' + str(char)
+
+"""
+Returns the number of lines currently in the preview
+
+
+"""
+def getLineNo():
+    return preview.get('1.0', tk.END).count('\n')
+
+
+filesBtn = tk.Button(
+    text = 'Select Folder',
+    command=addFiles
+    )
+
+filesBtn.pack()
+
+fieldBtn = tk.Button(
+    text = 'Add field',
+    command = getFileNo
+    )
+
+fieldBtn.pack()
+            
+
+window.mainloop()
