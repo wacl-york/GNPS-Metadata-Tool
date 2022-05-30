@@ -7,10 +7,14 @@ from os.path import isfile, join
 window = tk.Tk()
 preview = tk.Text()
 fieldName = tk.Entry()
+fieldDefault = tk.Entry()
+fieldNameLabel = tk.Label(text='Field to add')
+fieldDefaultLabel = tk.Label(text='Default value')
 
 preview.insert('1.0', 'Start by selecting a folder containing the files to be uploaded')
-
 preview.pack()
+
+noOfFiles = 0
 
 
 """
@@ -19,7 +23,7 @@ Finds the index before the end of the line to determine where to insert new char
 Iterates through the given line, character by character until it finds a '\n' character,
 then returns the index of the character before it
 
-Paranmeters:
+Parameters:
 
     line: Line in the text box to find the index with
 
@@ -62,21 +66,39 @@ def getLineNo():
 
 def addField():
     field = fieldName.get()
-    insert = getEnd(1)
-
-
+    default = fieldDefault.get()
+    fieldName.delete(0, tk.END)
+    fieldDefault.delete(0, tk.END)
+    insertIndex = getEnd(1)
+    locationToInsert = '1.' + str(insertIndex)
+    preview.insert(locationToInsert, ', ATTRIBUTE_'+field)
+    print(noOfFiles)
+    for each_line in range(noOfFiles):
+        
+        lineNo = each_line + 2 #One to account for the line with the field names, one to account for the fact that lines are not zero-indexed
+        print(lineNo)
+        insertIndex = getEnd(lineNo)
+        print(str(lineNo) + '.' + str(insertIndex))
+        preview.insert(str(lineNo) + '.' + str(insertIndex), ', ' + default)
+        
+        
 def addFiles():
+    global noOfFiles
     #Gets the files to add to the preview
     directoryToAdd = fd.askdirectory()
     filesToAdd = [file for file in listdir(directoryToAdd) if isfile(join(directoryToAdd, file))]
     #Adds the files to the preview under the filename column
     preview.delete('1.0', tk.END)
-    preview.insert('1.0', 'filename \n')
+    preview.insert('1.0', 'filename\n')
     lineNo=2
     for eachFile in filesToAdd:
         index = str(lineNo) + '.0'
-        preview.insert(index, eachFile)
+        preview.insert(index, eachFile + '\n')
         lineNo += 1
+        noOfFiles += 1
+    
+    fieldBtn['state']=tk.NORMAL
+    print(fieldBtn.state)
 
 
 filesBtn = tk.Button(
@@ -88,10 +110,14 @@ filesBtn.pack()
 
 fieldBtn = tk.Button(
     text = 'Add field',
-    command = getLineNo
+    command = addField,
+    state='disabled'
     )
 
 fieldBtn.pack()
-            
+fieldNameLabel.pack()
+fieldName.pack()
+fieldDefaultLabel.pack()
+fieldDefault.pack()
 
 window.mainloop()
