@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import filedialog as fd 
 from os import listdir #import walk instead if files and dirs are important
 from os.path import isfile, join
+#from Methods import *
 
 window = tk.Tk()
 preview = tk.Text()
@@ -11,22 +12,6 @@ preview.insert('1.0', 'Start by selecting a folder containing the files to be up
 
 preview.pack()
 
-def addFiles():
-    #Gets the files to add to the preview
-    directoryToAdd = fd.askdirectory()
-    filesToAdd = [file for file in listdir(directoryToAdd) if isfile(join(directoryToAdd, file))]
-    #Adds the files to the preview under the filename column
-    preview.delete('1.0', tk.END)
-    preview.insert('1.0', 'filename \n')
-    lineNo=2
-    for eachFile in filesToAdd:
-        index = str(lineNo) + '.0'
-        preview.insert(index, eachFile)
-        lineNo += 1
-
-def addField():
-    field = fieldName.get()
-    
 
 """
 Finds the index before the end of the line to determine where to insert new characters
@@ -58,7 +43,12 @@ def getEnd(line):
 """
 Returns the number of lines currently in the preview
 
+Counts the number of EOL characters to determine how many lines there are. If the text doesn't end with an EOL character,
+that means the user has added another line by themselves without an EOL character, so another line is counted.
 
+Returns:
+
+    lines: No of lines in the text
 """
 def getLineNo():
     text = preview.get('1.0', tk.END)
@@ -70,6 +60,25 @@ def getLineNo():
     return lines
 
 
+def addField():
+    field = fieldName.get()
+    insert = getEnd(1)
+
+
+def addFiles():
+    #Gets the files to add to the preview
+    directoryToAdd = fd.askdirectory()
+    filesToAdd = [file for file in listdir(directoryToAdd) if isfile(join(directoryToAdd, file))]
+    #Adds the files to the preview under the filename column
+    preview.delete('1.0', tk.END)
+    preview.insert('1.0', 'filename \n')
+    lineNo=2
+    for eachFile in filesToAdd:
+        index = str(lineNo) + '.0'
+        preview.insert(index, eachFile)
+        lineNo += 1
+
+
 filesBtn = tk.Button(
     text = 'Select Folder',
     command=addFiles
@@ -79,7 +88,7 @@ filesBtn.pack()
 
 fieldBtn = tk.Button(
     text = 'Add field',
-    command = getFileNo
+    command = getLineNo
     )
 
 fieldBtn.pack()
