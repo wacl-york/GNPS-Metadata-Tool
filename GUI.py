@@ -61,7 +61,13 @@ Returns the number of lines currently in the preview
 
 """
 def getLineNo():
-    return preview.get('1.0', tk.END).count('\n')
+    text = preview.get('1.0', tk.END)
+    lines = text.count('\n')
+    #Accounts for the possibility that the user has added a line in the preview that doesn't have an EOL character at the end
+    if text[-1] != '\n':
+        lines += 1
+    
+    return lines
 
 
 filesBtn = tk.Button(
