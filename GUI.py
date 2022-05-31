@@ -109,8 +109,12 @@ def addFiles():
 
 
 def submit():
-    writeFile = open('Metadata.csv', 'w')
-    writeFile.write(preview.get('1.0', tk.END))
+    fileContents = preview.get('1.0', tk.END)
+    preview.delete('1.0', tk.END)
+    fileContents = fileContents.replace(',', '\t')
+    print(fileContents)
+    writeFile = open('Metadata.txt', 'w')
+    writeFile.write(fileContents)
     writeFile.close()
 
 filesBtn = tk.Button(
