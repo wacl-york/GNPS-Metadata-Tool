@@ -106,26 +106,52 @@ def addFiles():
         noOfFiles += 1
     
     fieldBtn['state']=tk.NORMAL
-    submitBtn['state']=tk.NORMAL    
+    submitBtn['state']=tk.NORMAL
+    filesBtn['state']=tk.DISABLED
+    importBtn['state']=tk.NORMAL
 
 
 def submit():
     fileContents = preview.get('1.0', tk.END)
     preview.delete('1.0', tk.END)
     fileContents = fileContents.replace(',', '\t')
-    print(fileContents)
     writeFile = open('Metadata.txt', 'w')
     writeFile.write(fileContents)
     writeFile.close()
 
+"""
+Reads in an xml file and adds the fields it contains to the preview
 
+User selects a file, which is then parsed to get two lists containing the names
+and default values of each field. These two lists are then iterated through to
+add all the fields to the preview in the same manner as addFiles()
+"""
 def importConfig():
     #User selects config file
     configPath = fd.askopenfilename()
-    print(configPath)
     #Config file is read
+    tree = ET.parse(configPath)
+    root=tree.getroot()
+    names = []
+    for name in root.iter('name'):
+        names.append(name.text)
 
+    values = []
+    for value in root.iter('default'):
+        values.append(value.text)
+        
     #Preview is updated according to config file
+    for each_field in range(len(names)):
+        field = names[each_field]
+        default = values[each_field]
+        insertIndex = getEnd(1)
+        locationToInsert = '1.' + str(insertIndex)
+        preview.insert(locationToInsert, ', ATTRIBUTE_' + field)
+        #Adds the default value to the end of each line except the first
+        for each_line in range(noOfFiles):
+            lineNo = each_line + 2 #One to account for the line with the field names, one to account for the fact that lines are not zero-indexed
+            insertIndex = getEnd(lineNo)
+            preview.insert(str(lineNo) + '.' + str(insertIndex), ', ' + default)
 
 filesBtn = tk.Button(
     text = 'Select Folder',
@@ -148,7 +174,9 @@ submitBtn = tk.Button(
 
 importBtn = tk.Button(
     text = 'Import config',
-    command = importConfig)
+    command = importConfig,
+    state = 'disabled'
+    )
 
 fieldBtn.pack()
 fieldNameLabel.pack()
