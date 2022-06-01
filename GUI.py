@@ -117,6 +117,15 @@ def submit():
     writeFile.write(fileContents)
     writeFile.close()
 
+
+def importConfig():
+    #User selects config file
+    configPath = fd.askopenfilename()
+    print(configPath)
+    #Config file is read
+
+    #Preview is updated according to config file
+
 filesBtn = tk.Button(
     text = 'Select Folder',
     command=addFiles
@@ -136,11 +145,16 @@ submitBtn = tk.Button(
     state = 'disabled'
     )
 
+importBtn = tk.Button(
+    text = 'Import config',
+    command = importConfig)
+
 fieldBtn.pack()
 fieldNameLabel.pack()
 fieldName.pack()
 fieldDefaultLabel.pack()
 fieldDefault.pack()
+importBtn.pack()
 submitBtn.pack()
 
 window.mainloop()

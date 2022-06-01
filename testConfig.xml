@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fields>
+	<field>
+	        <name>"Date"</name>
+        	<default>"2022"</default>
+	</field>
+	<field>
+        	<name>"State"</name>
+        	<default>"Gas"</default>
+	</field>
+</fields>
