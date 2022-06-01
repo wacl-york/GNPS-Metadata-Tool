@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import filedialog as fd 
 from os import listdir #import walk instead if files and dirs are important
 from os.path import isfile, join
+import xml.etree.ElementTree as ET
 #from Methods import *
 
 window = tk.Tk()
