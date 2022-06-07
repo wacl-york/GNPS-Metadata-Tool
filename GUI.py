@@ -93,6 +93,7 @@ iteratively added to each line.
 """
 def addFiles():
     global noOfFiles
+    noOfFiles = 0
     #Gets the files to add to the preview
     directoryToAdd = fd.askdirectory()
     filesToAdd = [file for file in listdir(directoryToAdd) if isfile(join(directoryToAdd, file))]
@@ -127,6 +128,11 @@ def submit():
         writeFile = open(path, 'w')
         writeFile.write(fileContents)
         writeFile.close()
+
+        filesBtn['state']=tk.NORMAL
+        fieldBtn['state']=tk.DISABLED
+        submitBtn['state']=tk.DISABLED
+        importBtn['state']=tk.DISABLED
 
 
 """
