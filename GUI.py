@@ -96,21 +96,22 @@ def addFiles():
     noOfFiles = 0
     #Gets the files to add to the preview
     directoryToAdd = fd.askdirectory()
-    filesToAdd = [file for file in listdir(directoryToAdd) if isfile(join(directoryToAdd, file))]
-    #Adds the files to the preview under the filename column
-    preview.delete('1.0', tk.END)
-    preview.insert('1.0', 'filename\n')
-    lineNo=2
-    for eachFile in filesToAdd:
-        index = str(lineNo) + '.0'
-        preview.insert(index, eachFile + '\n')
-        lineNo += 1
-        noOfFiles += 1
-    
-    fieldBtn['state']=tk.NORMAL
-    submitBtn['state']=tk.NORMAL
-    filesBtn['state']=tk.DISABLED
-    importBtn['state']=tk.NORMAL
+    if directoryToAdd != ():
+        filesToAdd = [file for file in listdir(directoryToAdd) if isfile(join(directoryToAdd, file))]
+        #Adds the files to the preview under the filename column
+        preview.delete('1.0', tk.END)
+        preview.insert('1.0', 'filename\n')
+        lineNo=2
+        for eachFile in filesToAdd:
+            index = str(lineNo) + '.0'
+            preview.insert(index, eachFile + '\n')
+            lineNo += 1
+            noOfFiles += 1
+        
+        fieldBtn['state']=tk.NORMAL
+        submitBtn['state']=tk.NORMAL
+        filesBtn['state']=tk.DISABLED
+        importBtn['state']=tk.NORMAL
 
 
 def submit():
