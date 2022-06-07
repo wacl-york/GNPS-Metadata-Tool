@@ -6,6 +6,7 @@ import xml.etree.ElementTree as ET
 #from Methods import *
 
 window = tk.Tk()
+window.title('Metadata Tool')
 preview = tk.Text()
 fieldName = tk.Entry()
 fieldDefault = tk.Entry()
@@ -112,12 +113,21 @@ def addFiles():
 
 
 def submit():
-    fileContents = preview.get('1.0', tk.END)
-    preview.delete('1.0', tk.END)
-    fileContents = fileContents.replace(',', '\t')
-    writeFile = open('Metadata.txt', 'w')
-    writeFile.write(fileContents)
-    writeFile.close()
+    path = fd.asksaveasfilename(defaultextension=".txt", filetypes=(("text file", "*.txt"),))
+    #Ensures a valid path has been selected, and that the user hasn't clicked cancel
+    if path != '':
+        #Ensures the file is saved as a .txt, rather than anything else
+        if path.find('.') != -1:
+            path = path[0:path.find('.')]
+            path += '.txt'
+            
+        fileContents = preview.get('1.0', tk.END)
+        preview.delete('1.0', tk.END)
+        fileContents = fileContents.replace(',', '\t')
+        writeFile = open(path, 'w')
+        writeFile.write(fileContents)
+        writeFile.close()
+
 
 """
 Reads in an xml file and adds the fields it contains to the preview
@@ -152,6 +162,7 @@ def importConfig():
             lineNo = each_line + 2 #One to account for the line with the field names, one to account for the fact that lines are not zero-indexed
             insertIndex = getEnd(lineNo)
             preview.insert(str(lineNo) + '.' + str(insertIndex), ', ' + default)
+
 
 filesBtn = tk.Button(
     text = 'Select Folder',
