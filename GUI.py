@@ -145,7 +145,7 @@ add all the fields to the preview in the same manner as addFiles()
 """
 def importConfig():
     #User selects config file
-    configPath = fd.askopenfilename()
+    configPath = fd.askopenfilename(filetypes=(("XML file", "*.xml"),))
     if configPath != '':
         #Config file is read
         tree = ET.parse(configPath)
