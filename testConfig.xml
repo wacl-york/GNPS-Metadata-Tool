@@ -2,7 +2,7 @@
 <fields>
 	<field>
 	        <name>Date</name>
-        	<default>"2022"</default>
+        	<default>2022</default>
 	</field>
 	<field>
         	<name>State</name>
