@@ -145,29 +145,30 @@ add all the fields to the preview in the same manner as addFiles()
 def importConfig():
     #User selects config file
     configPath = fd.askopenfilename()
-    #Config file is read
-    tree = ET.parse(configPath)
-    root=tree.getroot()
-    names = []
-    for name in root.iter('name'):
-        names.append(name.text)
+    if configPath != '':
+        #Config file is read
+        tree = ET.parse(configPath)
+        root=tree.getroot()
+        names = []
+        for name in root.iter('name'):
+            names.append(name.text)
 
-    values = []
-    for value in root.iter('default'):
-        values.append(value.text)
-        
-    #Preview is updated according to config file
-    for each_field in range(len(names)):
-        field = names[each_field]
-        default = values[each_field]
-        insertIndex = getEnd(1)
-        locationToInsert = '1.' + str(insertIndex)
-        preview.insert(locationToInsert, ', ATTRIBUTE_' + field)
-        #Adds the default value to the end of each line except the first
-        for each_line in range(noOfFiles):
-            lineNo = each_line + 2 #One to account for the line with the field names, one to account for the fact that lines are not zero-indexed
-            insertIndex = getEnd(lineNo)
-            preview.insert(str(lineNo) + '.' + str(insertIndex), ', ' + default)
+        values = []
+        for value in root.iter('default'):
+            values.append(value.text)
+            
+        #Preview is updated according to config file
+        for each_field in range(len(names)):
+            field = names[each_field]
+            default = values[each_field]
+            insertIndex = getEnd(1)
+            locationToInsert = '1.' + str(insertIndex)
+            preview.insert(locationToInsert, ', ATTRIBUTE_' + field)
+            #Adds the default value to the end of each line except the first
+            for each_line in range(noOfFiles):
+                lineNo = each_line + 2 #One to account for the line with the field names, one to account for the fact that lines are not zero-indexed
+                insertIndex = getEnd(lineNo)
+                preview.insert(str(lineNo) + '.' + str(insertIndex), ', ' + default)
 
 
 filesBtn = tk.Button(
