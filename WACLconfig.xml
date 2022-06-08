@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fields>
+	<field>
+	        <name>Sample Type</name>
+        	<default> </default>
+	</field>
+	<field>
+        	<name>Sample Date</name>
+        	<default> </default>
+	</field>
+	<field>
+		<name>Sample Location</name>
+		<default> </default>
+	</field>
+	<field>
+                <name>Instrument</name>
+                <default> </default>
+	</field>
+	<field>
+                <name>Ionisation source</name>
+                <default> </default>
+	</field>
+	<field>
+		<name>Collision Energy/Fragmentation Method</name>
+                <default> </default>
+	</field>
+	<field>
+                <name>Mass Resolution Setting</name>
+                <default> </default>
+	</field>
+	<field>
+                <name>Extraction Method</name>
+                <default> </default>
+	</field>
+	<field>
+                <name>Sample Injection Solvent</name>
+                <default> </default>
+	</field>
+	<field>
+                <name>Direct Injection or Chromatography</name>
+                <default> </default>
+	</field>
+	<field>
+                <name>Mobile phases and Modifiers</name>
+                <default> </default>
+	</field>
+	<field>
+                <name>Column</name>
+                <default> </default>
+	</field>
+	<field>
+                <name>Identification</name>
+                <default> </default>
+	</field>
+	<field>
+                <name>Elemental Formula</name>
+                <default> </default>
+	</field>
+	<field>
+                <name>Measured Mass</name>
+                <default> </default>
+	</field>
+	<field>
+                <name>Accuracy</name>
+                <default> </default>
+	</field>
+	<field>
+                <name>Retention time</name>
+                <default> </default>
+	</field>
+	<field>
+                <name>Data Analysis Method</name>
+                <default> </default>
+	</field>
+</fields>
