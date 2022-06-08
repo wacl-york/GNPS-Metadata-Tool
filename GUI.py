@@ -6,15 +6,20 @@ import xml.etree.ElementTree as ET
 #from Methods import *
 
 window = tk.Tk()
+window.geometry('1000x700')
 window.title('Metadata Tool')
-preview = tk.Text()
+#window.attributes('-fullscreen', True) This may not be the way to go, but keeping it here as an option
+
+scroll = tk.Scrollbar(window, orient='horizontal')
+scroll.pack(side=tk.BOTTOM, fill='x')
+preview = tk.Text(wrap=tk.NONE, xscrollcommand=scroll.set, width=120)
 fieldName = tk.Entry()
 fieldDefault = tk.Entry()
 fieldNameLabel = tk.Label(text='Field to add')
 fieldDefaultLabel = tk.Label(text='Default value')
-
 preview.insert('1.0', 'Start by selecting a folder containing the files to be uploaded')
 preview.pack()
+scroll.config(command=preview.xview)
 
 noOfFiles = 0
 
