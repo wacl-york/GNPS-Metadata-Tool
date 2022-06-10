@@ -46,6 +46,7 @@ def getEnd(line):
             char += 1
             current = str(line) + '.' + str(char)
 
+
 """
 Returns the number of lines currently in the preview
 
@@ -64,6 +65,7 @@ def getLineNo():
         lines += 1
     
     return lines
+
 
 """
 Adds a new field to the preview
@@ -84,7 +86,8 @@ def addField():
         lineNo = each_line + 2 #One to account for the line with the field names, one to account for the fact that lines are not zero-indexed
         insertIndex = getEnd(lineNo)
         preview.insert(str(lineNo) + '.' + str(insertIndex), ', ' + default)
-        
+
+
 """
 Adds all files in a folder to a directory
 
