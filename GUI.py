@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import filedialog as fd 
+from tkinter import filedialog as fd
 from os import listdir #import walk instead if files and dirs are important
 from os.path import isfile, join
 import xml.etree.ElementTree as ET
@@ -80,7 +80,7 @@ def addField():
     locationToInsert = '1.' + str(insertIndex)
     preview.insert(locationToInsert, ', ATTRIBUTE_'+field)
     #Adds the default value to the end of each line except the first
-    for each_line in range(noOfFiles):
+    for each_line in range(preview.get('1.0', tk.END).count('\n') - 2):
         lineNo = each_line + 2 #One to account for the line with the field names, one to account for the fact that lines are not zero-indexed
         insertIndex = getEnd(lineNo)
         preview.insert(str(lineNo) + '.' + str(insertIndex), ', ' + default)
@@ -166,8 +166,10 @@ def importConfig():
             locationToInsert = '1.' + str(insertIndex)
             preview.insert(locationToInsert, ', ATTRIBUTE_' + field)
             #Adds the default value to the end of each line except the first
-            for each_line in range(noOfFiles):
-                lineNo = each_line + 2 #One to account for the line with the field names, one to account for the fact that lines are not zero-indexed
+
+            #There needs to be two less lines due to the lack of zero-indexing and the first line being irrelevant here
+            for each_line in range(preview.get('1.0', tk.END).count('\n') - 2):
+                lineNo = each_line + 2 #Similiarly, the working line is increased by two to ensure the first line is skipped
                 insertIndex = getEnd(lineNo)
                 preview.insert(str(lineNo) + '.' + str(insertIndex), ', ' + default)
 
