@@ -8,17 +8,28 @@ import xml.etree.ElementTree as ET
 window = tk.Tk()
 window.geometry('1000x700')
 window.title('Metadata Tool')
-#window.attributes('-fullscreen', True) This may not be the way to go, but keeping it here as an option
 
-scroll = tk.Scrollbar(window, orient='horizontal')
-scroll.pack(side=tk.BOTTOM, fill='x')
+for i in range(3):
+    window.columnconfigure(i, weight=1, minsize=200)
+    window.rowconfigure(i, weight=1, minsize=50)
+
+lower_frame = tk.Frame(
+    master = window
+    )
+
+side_frame = tk.Frame(
+    master=window
+    )
+
+scroll = tk.Scrollbar(master = window, orient='horizontal')
+scroll.grid(row=1, column=0, sticky='EW')
 preview = tk.Text(wrap=tk.NONE, xscrollcommand=scroll.set, width=120)
-fieldName = tk.Entry()
-fieldDefault = tk.Entry()
-fieldNameLabel = tk.Label(text='Field to add')
-fieldDefaultLabel = tk.Label(text='Default value')
+fieldName = tk.Entry(master=side_frame)
+fieldDefault = tk.Entry(side_frame)
+fieldNameLabel = tk.Label(text='Field to add', master=side_frame)
+fieldDefaultLabel = tk.Label(text='Default value', master=side_frame)
 preview.insert('1.0', 'Start by selecting a folder containing the files to be uploaded')
-preview.pack()
+preview.grid(row=0, column=0, sticky='EW')
 scroll.config(command=preview.xview)
 
 noOfFiles = 0
@@ -179,35 +190,40 @@ def importConfig():
 
 filesBtn = tk.Button(
     text = 'Select Folder',
-    command=addFiles
+    command=addFiles,
+    master = lower_frame
     )
-
-filesBtn.pack()
 
 fieldBtn = tk.Button(
     text = 'Add field',
     command = addField,
-    state = 'disabled'
+    state = 'disabled',
+    master = side_frame
     )
 
 submitBtn = tk.Button(
     text = 'Submit',
     command = submit,
-    state = 'disabled'
+    state = 'disabled',
+    master = lower_frame
     )
 
 importBtn = tk.Button(
     text = 'Import config',
     command = importConfig,
-    state = 'disabled'
+    state = 'disabled',
+    master = lower_frame
     )
 
-fieldBtn.pack()
-fieldNameLabel.pack()
-fieldName.pack()
-fieldDefaultLabel.pack()
-fieldDefault.pack()
-importBtn.pack()
-submitBtn.pack()
+lower_frame.grid(row=2, column=0)
+side_frame.grid(row=0, column=1)
+filesBtn.grid(row=0, column=0)
+fieldBtn.grid(row=4, column=0)
+fieldNameLabel.grid(row=0, column=0)
+fieldName.grid(row=1, column=0)
+fieldDefaultLabel.grid(row=2, column=0)
+fieldDefault.grid(row=3, column=0)
+importBtn.grid(row=1, column=0)
+submitBtn.grid(row=2, column=0)
 
 window.mainloop()
