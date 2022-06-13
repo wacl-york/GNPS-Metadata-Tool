@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import filedialog as fd 
+from tkinter import filedialog as fd
 from os import listdir
 from os.path import isfile, join
 import xml.etree.ElementTree as ET
@@ -34,9 +34,9 @@ fieldDefaultLabel = tk.Label(text='Default value', master=side_frame)
 instructionsLabel = tk.Label(text='Instructions for use: \n 1. Put all the files you wish to create metadata for into one folder, then select this folder \n 2. The files within this folder will appear in the preview. From here you can add fields by either \n importing a config file containing all the fields. Alternatively you can \n add fields individually by entering the name of the field and optionally a default value \n 3. From here you can modify the values as necessary \n 4. Click the "Save as .txt" button to finalise the folder')
 instructionsLabel.bind('<Configure>', lambda e: instructionsLabel.config(wraplength=instructionsLabel.winfo_width()))
 preview.insert('1.0', 'Start by selecting a folder containing the files to be uploaded')
-preview.pack()
+preview.pack(fill='both', expand=True)
 scroll.config(command=preview.xview)
-
+    
 noOfFiles = 0
 
 
@@ -219,7 +219,8 @@ importBtn = tk.Button(
     state = 'disabled',
     master = lower_frame
     )
-preview_frame.grid(row=0, column=0)
+
+preview_frame.grid(row=0, column=0, sticky='NESW')
 lower_frame.grid(row=2, column=0)
 side_frame.grid(row=0, column=1)
 filesBtn.grid(row=0, column=0)
