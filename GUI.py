@@ -6,10 +6,10 @@ import xml.etree.ElementTree as ET
 #from Methods import *
 
 window = tk.Tk()
-window.geometry('1000x700')
+window.geometry('1700x700')
 window.title('Metadata Tool')
 
-for i in range(3):
+for i in range(2):
     window.columnconfigure(i, weight=1, minsize=200)
     window.rowconfigure(i, weight=1, minsize=50)
 
@@ -32,6 +32,7 @@ fieldName = tk.Entry(master=side_frame)
 fieldDefault = tk.Entry(side_frame)
 fieldNameLabel = tk.Label(text='Field to add', master=side_frame)
 fieldDefaultLabel = tk.Label(text='Default value', master=side_frame)
+instructionsLabel = tk.Label(text='Instructions for use: \n 1. Put all the files you wish to create metadata for into one folder, then select this folder \n 2. The files within this folder will appear in the preview. From here you can add fields by either \n importing a config file containing all the fields. Alternatively you can \n add fields individually by entering the name of the field and optionally a default value \n 3. From here you can modify the values as necessary \n 4. Click the "Save as .txt" button to finalise the folder')
 preview.insert('1.0', 'Start by selecting a folder containing the files to be uploaded')
 preview.pack()
 scroll.config(command=preview.xview)
@@ -206,7 +207,7 @@ fieldBtn = tk.Button(
     )
 
 submitBtn = tk.Button(
-    text = 'Submit',
+    text = 'Save as .txt',
     command = submit,
     state = 'disabled',
     master = lower_frame
@@ -229,5 +230,6 @@ fieldDefaultLabel.grid(row=2, column=0)
 fieldDefault.grid(row=3, column=0)
 importBtn.grid(row=1, column=0)
 submitBtn.grid(row=2, column=0)
+instructionsLabel.grid(row=1, column=1)
 
 window.mainloop()
