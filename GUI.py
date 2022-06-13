@@ -1,9 +1,8 @@
 import tkinter as tk
 from tkinter import filedialog as fd 
-from os import listdir #import walk instead if files and dirs are important
+from os import listdir
 from os.path import isfile, join
 import xml.etree.ElementTree as ET
-#from Methods import *
 
 window = tk.Tk()
 window.geometry('1700x700')
@@ -27,12 +26,13 @@ preview_frame = tk.Frame(
 
 scroll = tk.Scrollbar(master = preview_frame, orient='horizontal')
 scroll.pack(side=tk.BOTTOM, fill='x')
-preview = tk.Text(master = preview_frame, wrap=tk.NONE, xscrollcommand=scroll.set, width=120)
+preview = tk.Text(master = preview_frame, wrap=tk.NONE, xscrollcommand=scroll.set)
 fieldName = tk.Entry(master=side_frame)
 fieldDefault = tk.Entry(side_frame)
 fieldNameLabel = tk.Label(text='Field to add', master=side_frame)
 fieldDefaultLabel = tk.Label(text='Default value', master=side_frame)
 instructionsLabel = tk.Label(text='Instructions for use: \n 1. Put all the files you wish to create metadata for into one folder, then select this folder \n 2. The files within this folder will appear in the preview. From here you can add fields by either \n importing a config file containing all the fields. Alternatively you can \n add fields individually by entering the name of the field and optionally a default value \n 3. From here you can modify the values as necessary \n 4. Click the "Save as .txt" button to finalise the folder')
+instructionsLabel.bind('<Configure>', lambda e: instructionsLabel.config(wraplength=instructionsLabel.winfo_width()))
 preview.insert('1.0', 'Start by selecting a folder containing the files to be uploaded')
 preview.pack()
 scroll.config(command=preview.xview)
