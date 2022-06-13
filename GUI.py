@@ -8,9 +8,11 @@ window = tk.Tk()
 window.geometry('1700x700')
 window.title('Metadata Tool')
 
-for i in range(2):
-    window.columnconfigure(i, weight=1, minsize=200)
-    window.rowconfigure(i, weight=1, minsize=50)
+window.columnconfigure(0, weight=1, minsize=200)
+window.columnconfigure(1, weight=0, minsize=400)
+
+for r in range(2):
+    window.rowconfigure(r, weight=1, minsize=50)
 
 lower_frame = tk.Frame(
     master = window
@@ -31,7 +33,7 @@ fieldName = tk.Entry(master=side_frame)
 fieldDefault = tk.Entry(side_frame)
 fieldNameLabel = tk.Label(text='Field to add', master=side_frame)
 fieldDefaultLabel = tk.Label(text='Default value', master=side_frame)
-instructionsLabel = tk.Label(text='Instructions for use: \n 1. Put all the files you wish to create metadata for into one folder, then select this folder \n 2. The files within this folder will appear in the preview. From here you can add fields by either \n importing a config file containing all the fields. Alternatively you can \n add fields individually by entering the name of the field and optionally a default value \n 3. From here you can modify the values as necessary \n 4. Click the "Save as .txt" button to finalise the folder')
+instructionsLabel = tk.Label(text='Instructions for use: \n 1. Put all the files you wish to create metadata \n for into one folder, then select this folder \n 2. The files within this folder will appear in the preview. \n From here you can add fields by either \n importing a config file containing all \n the fields. Alternatively you can add fields \n individually by entering the name of the field  \n and optionally a default value \n 3. From here you can modify the values as necessary \n 4. Click the "Save as .txt" button to finalise the folder')
 instructionsLabel.bind('<Configure>', lambda e: instructionsLabel.config(wraplength=instructionsLabel.winfo_width()))
 preview.insert('1.0', 'Start by selecting a folder containing the files to be uploaded')
 preview.pack(fill='both', expand=True)
@@ -221,16 +223,21 @@ importBtn = tk.Button(
     )
 
 preview_frame.grid(row=0, column=0, sticky='NESW')
-lower_frame.grid(row=2, column=0)
+lower_frame.grid(row=1, column=0)
 side_frame.grid(row=0, column=1)
+
+#lower frame
 filesBtn.grid(row=0, column=0)
-fieldBtn.grid(row=4, column=0)
+importBtn.grid(row=1, column=0)
+submitBtn.grid(row=2, column=0)
+
+#side frame
 fieldNameLabel.grid(row=0, column=0)
 fieldName.grid(row=1, column=0)
 fieldDefaultLabel.grid(row=2, column=0)
 fieldDefault.grid(row=3, column=0)
-importBtn.grid(row=1, column=0)
-submitBtn.grid(row=2, column=0)
+fieldBtn.grid(row=4, column=0)
+
 instructionsLabel.grid(row=1, column=1)
 
 window.mainloop()
