@@ -21,15 +21,19 @@ side_frame = tk.Frame(
     master=window
     )
 
-scroll = tk.Scrollbar(master = window, orient='horizontal')
-scroll.grid(row=1, column=0, sticky='EW')
-preview = tk.Text(wrap=tk.NONE, xscrollcommand=scroll.set, width=120)
+preview_frame = tk.Frame(
+    master=window
+    )
+
+scroll = tk.Scrollbar(master = preview_frame, orient='horizontal')
+scroll.pack(side=tk.BOTTOM, fill='x')
+preview = tk.Text(master = preview_frame, wrap=tk.NONE, xscrollcommand=scroll.set, width=120)
 fieldName = tk.Entry(master=side_frame)
 fieldDefault = tk.Entry(side_frame)
 fieldNameLabel = tk.Label(text='Field to add', master=side_frame)
 fieldDefaultLabel = tk.Label(text='Default value', master=side_frame)
 preview.insert('1.0', 'Start by selecting a folder containing the files to be uploaded')
-preview.grid(row=0, column=0, sticky='EW')
+preview.pack()
 scroll.config(command=preview.xview)
 
 noOfFiles = 0
@@ -214,7 +218,7 @@ importBtn = tk.Button(
     state = 'disabled',
     master = lower_frame
     )
-
+preview_frame.grid(row=0, column=0)
 lower_frame.grid(row=2, column=0)
 side_frame.grid(row=0, column=1)
 filesBtn.grid(row=0, column=0)
