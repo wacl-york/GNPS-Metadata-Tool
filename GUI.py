@@ -1,21 +1,44 @@
 import tkinter as tk
 from tkinter import filedialog as fd
-from os import listdir #import walk instead if files and dirs are important
+from os import listdir
 from os.path import isfile, join
 import xml.etree.ElementTree as ET
-#from Methods import *
 
 window = tk.Tk()
+window.geometry('1700x700')
 window.title('Metadata Tool')
-preview = tk.Text()
-fieldName = tk.Entry()
-fieldDefault = tk.Entry()
-fieldNameLabel = tk.Label(text='Field to add')
-fieldDefaultLabel = tk.Label(text='Default value')
 
+window.columnconfigure(0, weight=1, minsize=200)
+window.columnconfigure(1, weight=0, minsize=400)
+
+for r in range(2):
+    window.rowconfigure(r, weight=1, minsize=50)
+
+lower_frame = tk.Frame(
+    master = window
+    )
+
+side_frame = tk.Frame(
+    master=window
+    )
+
+preview_frame = tk.Frame(
+    master=window
+    )
+
+scroll = tk.Scrollbar(master = preview_frame, orient='horizontal')
+scroll.pack(side=tk.BOTTOM, fill='x')
+preview = tk.Text(master = preview_frame, wrap=tk.NONE, xscrollcommand=scroll.set)
+fieldName = tk.Entry(master=side_frame)
+fieldDefault = tk.Entry(side_frame)
+fieldNameLabel = tk.Label(text='Field to add', master=side_frame)
+fieldDefaultLabel = tk.Label(text='Default value', master=side_frame)
+instructionsLabel = tk.Label(text='Instructions for use: \n 1. Put all the files you wish to create metadata \n for into one folder, then select this folder \n 2. The files within this folder will appear in the preview. \n From here you can add fields by either \n importing a config file containing all \n the fields. Alternatively you can add fields \n individually by entering the name of the field  \n and optionally a default value \n 3. From here you can modify the values as necessary \n 4. Click the "Save as .txt" button to finalise the folder')
+instructionsLabel.bind('<Configure>', lambda e: instructionsLabel.config(wraplength=instructionsLabel.winfo_width()))
 preview.insert('1.0', 'Start by selecting a folder containing the files to be uploaded')
-preview.pack()
-
+preview.pack(fill='both', expand=True)
+scroll.config(command=preview.xview)
+    
 noOfFiles = 0
 
 
@@ -179,35 +202,47 @@ def importConfig():
 
 filesBtn = tk.Button(
     text = 'Select Folder',
-    command=addFiles
+    command=addFiles,
+    master = lower_frame
     )
-
-filesBtn.pack()
 
 fieldBtn = tk.Button(
     text = 'Add field',
     command = addField,
-    state = 'disabled'
+    state = 'disabled',
+    master = side_frame
     )
 
 submitBtn = tk.Button(
-    text = 'Submit',
+    text = 'Save as .txt',
     command = submit,
-    state = 'disabled'
+    state = 'disabled',
+    master = lower_frame
     )
 
 importBtn = tk.Button(
     text = 'Import config',
     command = importConfig,
-    state = 'disabled'
+    state = 'disabled',
+    master = lower_frame
     )
 
-fieldBtn.pack()
-fieldNameLabel.pack()
-fieldName.pack()
-fieldDefaultLabel.pack()
-fieldDefault.pack()
-importBtn.pack()
-submitBtn.pack()
+preview_frame.grid(row=0, column=0, sticky='NESW')
+lower_frame.grid(row=1, column=0)
+side_frame.grid(row=0, column=1)
+
+#lower frame
+filesBtn.grid(row=0, column=0)
+importBtn.grid(row=1, column=0)
+submitBtn.grid(row=2, column=0)
+
+#side frame
+fieldNameLabel.grid(row=0, column=0)
+fieldName.grid(row=1, column=0)
+fieldDefaultLabel.grid(row=2, column=0)
+fieldDefault.grid(row=3, column=0)
+fieldBtn.grid(row=4, column=0)
+
+instructionsLabel.grid(row=1, column=1)
 
 window.mainloop()
