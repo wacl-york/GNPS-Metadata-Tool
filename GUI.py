@@ -3,6 +3,7 @@ from tkinter import filedialog as fd
 from os import listdir
 from os.path import isfile, join
 import xml.etree.ElementTree as ET
+import yaml
 
 window = tk.Tk()
 window.geometry('1700x700')
@@ -171,18 +172,24 @@ add all the fields to the preview in the same manner as addFiles()
 """
 def importConfig():
     #User selects config file
-    configPath = fd.askopenfilename(filetypes=(("XML file", "*.xml"),))
+    configPath = fd.askopenfilename(filetypes=(("YAML file", "*.yaml"),))
     if configPath != '':
         #Config file is read
-        tree = ET.parse(configPath)
-        root=tree.getroot()
+        with open(configPath) as f:
+            data=yaml.load(f, Loader=yaml.FullLoader) 
+    
         names = []
-        for name in root.iter('name'):
-            names.append(name.text)
-
         values = []
-        for value in root.iter('default'):
-            values.append(value.text)
+        for each_field in data['fields']:
+            if type(each_field['Name']) != str:
+                names.append(str(each_field['Name']))
+            else:
+                names.append(each_field['Name'])
+
+            if type(each_field['Default']) != str:
+                values.append(str(each_field['Default']))
+            else:
+                values.append(each_field['Default'])
             
         #Preview is updated according to config file
         for each_field in range(len(names)):
