@@ -1,0 +1,39 @@
+fields:
+        - Name: Sample Type
+          Default: 
+        - Name: Sample Date
+          Default: 
+        - Name: Sample Location
+          Default:
+        - Name: Instrument
+          Default:
+        - Name: Ionisation Source
+          Default:
+        - Name: Collision Energy
+          Default:
+        - Name: Fragmentation Method
+          Default:
+        - Name: Mass Resolution Setting
+          Default:
+        - Name: Extraction Method
+          Default:
+        - Name: Sample Injection Solvent
+          Default:
+        - Name:
+          Default: Direct Injection or Chromatography
+        - Name: Mobile phases and Modifiers
+          Default:
+        - Name: Column
+          Default:
+        - Name: Identification
+          Default:
+        - Name: Elemental Formula
+          Default:
+        - Name: Measured Mass
+          Default:
+        - Name: Accuracy
+          Default:
+        - Name: Retention time
+          Default:
+        - Name: Data Analysis Method
+          Default:
