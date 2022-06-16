@@ -137,7 +137,6 @@ def addFiles():
         
         fieldBtn['state']=tk.NORMAL
         submitBtn['state']=tk.NORMAL
-        filesBtn['state']=tk.DISABLED
         importBtn['state']=tk.NORMAL
 
 
@@ -151,17 +150,10 @@ def submit():
             path += '.txt'
             
         fileContents = preview.get('1.0', tk.END)
-        preview.delete('1.0', tk.END)
         fileContents = fileContents.replace(',', '\t')
         writeFile = open(path, 'w')
         writeFile.write(fileContents)
         writeFile.close()
-
-        filesBtn['state']=tk.NORMAL
-        fieldBtn['state']=tk.DISABLED
-        submitBtn['state']=tk.DISABLED
-        importBtn['state']=tk.DISABLED
-
 
 """
 Reads in an xml file and adds the fields it contains to the preview
