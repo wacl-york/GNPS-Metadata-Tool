@@ -126,8 +126,9 @@ def addFiles():
 """
 Adds a new field to the preview
 
-Adds a field name to the top line and the default value to subsequent lines. All lines after the first are checked to find
-the end of the line, allowing the default value to be inserted in the correct place.
+Appends a new entry containing the field name to the first line and the default value to subsequent lists.
+These entries are then added to the preview frame using the grid method in the position corresponding to
+it's location in the 2d list
 """
 def addField():
     field = fieldName.get()
@@ -165,7 +166,7 @@ Reads in a yaml file and adds the fields it contains to the preview
 
 User selects a file, which is then parsed to get two lists containing the names
 and default values of each field. These two lists are then iterated through to
-add all the fields to the preview in the same manner as addFiles()
+add all the fields to the grid in the same manner as addFiles()
 """
 def importConfig():
     #User selects config file
