@@ -37,10 +37,11 @@ fieldDefaultLabel = tk.Label(text='Default value', master=side_frame)
 instructionsLabel = tk.Label(text='Instructions for use: \n 1. Put all the files you wish to create metadata \n for into one folder, then select this folder \n 2. The files within this folder will appear in the preview. \n From here you can add fields by either \n importing a config file containing all \n the fields. Alternatively you can add fields \n individually by entering the name of the field  \n and optionally a default value \n 3. From here you can modify the values as necessary \n 4. Click the "Save as .txt" button to finalise the folder')
 instructionsLabel.bind('<Configure>', lambda e: instructionsLabel.config(wraplength=instructionsLabel.winfo_width()))
 preview.insert('1.0', 'Start by selecting a folder containing the files to be uploaded')
-preview.grid(row=0, column=0)#ack(fill='both', expand=True)
+preview.grid(row=0, column=0)
 scroll.config(command=preview.xview)
     
 noOfFiles = 0
+grid = [[]]
 
 
 """
@@ -92,27 +93,6 @@ def getLineNo():
 
 
 """
-Adds a new field to the preview
-
-Adds a field name to the top line and the default value to subsequent lines. All lines after the first are checked to find
-the end of the line, allowing the default value to be inserted in the correct place.
-"""
-def addField():
-    field = fieldName.get()
-    default = fieldDefault.get()
-    fieldName.delete(0, tk.END)
-    fieldDefault.delete(0, tk.END)
-    insertIndex = getEnd(1)
-    locationToInsert = '1.' + str(insertIndex)
-    preview.insert(locationToInsert, ', ATTRIBUTE_'+field)
-    #Adds the default value to the end of each line except the first
-    for each_line in range(preview.get('1.0', tk.END).count('\n') - 2):
-        lineNo = each_line + 2 #One to account for the line with the field names, one to account for the fact that lines are not zero-indexed
-        insertIndex = getEnd(lineNo)
-        preview.insert(str(lineNo) + '.' + str(insertIndex), ', ' + default)
-
-
-"""
 Adds all files in a folder to a directory
 
 Uses tkinter fileDialog for the user to specify a directory. All files in this directory are collated into a list, which is then
@@ -120,13 +100,13 @@ iteratively added to each line.
 """
 def addFiles():
     global noOfFiles
+    #global grid
     noOfFiles = 0
     #Gets the files to add to the preview
     directoryToAdd = fd.askdirectory()
     if directoryToAdd != ():
         preview.grid_forget()
         filesToAdd = [file for file in listdir(directoryToAdd) if isfile(join(directoryToAdd, file))]
-        grid = [[]]
         grid[0].append(tk.Entry(master = preview_frame))
         grid[0][0].insert(0, 'filename')
         grid[0][0].grid(row=0, column=0)
@@ -141,6 +121,28 @@ def addFiles():
         fieldBtn['state']=tk.NORMAL
         submitBtn['state']=tk.NORMAL
         importBtn['state']=tk.NORMAL
+
+
+"""
+Adds a new field to the preview
+
+Adds a field name to the top line and the default value to subsequent lines. All lines after the first are checked to find
+the end of the line, allowing the default value to be inserted in the correct place.
+"""
+def addField():
+    field = fieldName.get()
+    default = fieldDefault.get()
+    fieldName.delete(0, tk.END)
+    fieldDefault.delete(0, tk.END)
+    grid[0].append(tk.Entry(master = preview_frame))
+    grid[0][-1].insert(0, 'ATTRIBUTE_'+field)
+    grid[0][-1].grid(row=0, column = len(grid[0])-1)
+    row_no = 1
+    for each_line in range(len(grid)-1):
+        grid[row_no].append(tk.Entry(master=preview_frame))
+        grid[row_no][-1].insert(0, default)
+        grid[row_no][-1].grid(row=row_no, column = len(grid[row_no]) - 1)
+        row_no += 1
 
 
 def submit():
@@ -159,7 +161,7 @@ def submit():
         writeFile.close()
 
 """
-Reads in an xml file and adds the fields it contains to the preview
+Reads in a yaml file and adds the fields it contains to the preview
 
 User selects a file, which is then parsed to get two lists containing the names
 and default values of each field. These two lists are then iterated through to
@@ -190,6 +192,17 @@ def importConfig():
         for each_field in range(len(names)):
             field = names[each_field]
             default = values[each_field]
+            grid[0].append(tk.Entry(master = preview_frame))
+            grid[0][-1].insert(0, 'ATTRIBUTE_'+field)
+            grid[0][-1].grid(row=0, column = len(grid[0])-1)
+            row_no = 1
+            for each_line in range(len(grid)-1):
+                grid[row_no].append(tk.Entry(master=preview_frame))
+                grid[row_no][-1].insert(0, default)
+                grid[row_no][-1].grid(row=row_no, column = len(grid[row_no]) - 1)
+                row_no += 1
+                
+            """
             insertIndex = getEnd(1)
             locationToInsert = '1.' + str(insertIndex)
             preview.insert(locationToInsert, ', ATTRIBUTE_' + field)
@@ -200,6 +213,7 @@ def importConfig():
                 lineNo = each_line + 2 #Similiarly, the working line is increased by two to ensure the first line is skipped
                 insertIndex = getEnd(lineNo)
                 preview.insert(str(lineNo) + '.' + str(insertIndex), ', ' + default)
+            """
 
 
 filesBtn = tk.Button(
