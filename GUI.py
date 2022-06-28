@@ -28,7 +28,7 @@ preview_frame = tk.Frame(
     )
 
 scroll = tk.Scrollbar(master = preview_frame, orient='horizontal')
-scroll.pack(side=tk.BOTTOM, fill='x')
+scroll.grid(row=1, column=0, sticky='EW')#pack(side=tk.BOTTOM, fill='x')
 preview = tk.Text(master = preview_frame, wrap=tk.NONE, xscrollcommand=scroll.set)
 fieldName = tk.Entry(master=side_frame)
 fieldDefault = tk.Entry(side_frame)
@@ -37,7 +37,7 @@ fieldDefaultLabel = tk.Label(text='Default value', master=side_frame)
 instructionsLabel = tk.Label(text='Instructions for use: \n 1. Put all the files you wish to create metadata \n for into one folder, then select this folder \n 2. The files within this folder will appear in the preview. \n From here you can add fields by either \n importing a config file containing all \n the fields. Alternatively you can add fields \n individually by entering the name of the field  \n and optionally a default value \n 3. From here you can modify the values as necessary \n 4. Click the "Save as .txt" button to finalise the folder')
 instructionsLabel.bind('<Configure>', lambda e: instructionsLabel.config(wraplength=instructionsLabel.winfo_width()))
 preview.insert('1.0', 'Start by selecting a folder containing the files to be uploaded')
-preview.pack(fill='both', expand=True)
+preview.grid(row=0, column=0)#ack(fill='both', expand=True)
 scroll.config(command=preview.xview)
     
 noOfFiles = 0
@@ -124,16 +124,19 @@ def addFiles():
     #Gets the files to add to the preview
     directoryToAdd = fd.askdirectory()
     if directoryToAdd != ():
+        preview.grid_forget()
         filesToAdd = [file for file in listdir(directoryToAdd) if isfile(join(directoryToAdd, file))]
-        #Adds the files to the preview under the filename column
-        preview.delete('1.0', tk.END)
-        preview.insert('1.0', 'filename\n')
-        lineNo=2
+        grid = [[]]
+        grid[0].append(tk.Entry(master = preview_frame))
+        grid[0][0].insert(0, 'filename')
+        grid[0][0].grid(row=0, column=0)
+        row = 1
         for eachFile in filesToAdd:
-            index = str(lineNo) + '.0'
-            preview.insert(index, eachFile + '\n')
-            lineNo += 1
-            noOfFiles += 1
+            grid.append([])
+            grid[row].append(tk.Entry(master = preview_frame))
+            grid[row][0].insert(0, eachFile)
+            grid[row][0].grid(row = row, column = 0)
+            row += 1
         
         fieldBtn['state']=tk.NORMAL
         submitBtn['state']=tk.NORMAL
