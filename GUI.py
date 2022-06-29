@@ -28,7 +28,7 @@ preview_frame = tk.Frame(
     )
 
 scroll = tk.Scrollbar(master = preview_frame, orient='horizontal')
-scroll.grid(row=1, column=0, sticky='EW')#pack(side=tk.BOTTOM, fill='x')
+#scroll.grid(row=1, column=0, sticky='EW')#pack(side=tk.BOTTOM, fill='x')
 preview = tk.Text(master = preview_frame, wrap=tk.NONE, xscrollcommand=scroll.set)
 fieldName = tk.Entry(master=side_frame)
 fieldDefault = tk.Entry(side_frame)
@@ -38,7 +38,7 @@ instructionsLabel = tk.Label(text='Instructions for use: \n 1. Put all the files
 instructionsLabel.bind('<Configure>', lambda e: instructionsLabel.config(wraplength=instructionsLabel.winfo_width()))
 preview.insert('1.0', 'Start by selecting a folder containing the files to be uploaded')
 preview.grid(row=0, column=0)
-scroll.config(command=preview.xview)
+#scroll.config(command=preview.xview)
     
 noOfFiles = 0
 grid = [[]]
@@ -121,10 +121,12 @@ def addFiles():
         fieldBtn['state']=tk.NORMAL
         submitBtn['state']=tk.NORMAL
         importBtn['state']=tk.NORMAL
+        scroll.grid(row=row, column=0, sticky='EW')
+        scroll.config(command=preview.xview)
 
 
 """
-Adds a new field to the preview
+Adds a new field to the gridS
 
 Appends a new entry containing the field name to the first line and the default value to subsequent lists.
 These entries are then added to the preview frame using the grid method in the position corresponding to
@@ -154,12 +156,30 @@ def submit():
         if path.find('.') != -1:
             path = path[0:path.find('.')]
             path += '.txt'
-            
+
+            writeFile = open(path, 'w')
+            for each_line in grid:
+                new_line = True
+                for each_field in each_line:
+                    if new_line == True:
+                        new_line = False
+                        writeFile.write(each_field.get())
+                    else:
+                        writeFile.write('\t')
+                        writeFile.write(each_field.get())
+
+                writeFile.write('\n')
+                        
+                
+                    
+
+        """
         fileContents = preview.get('1.0', tk.END)
         fileContents = fileContents.replace(',', '\t')
         writeFile = open(path, 'w')
         writeFile.write(fileContents)
         writeFile.close()
+        """
 
 """
 Reads in a yaml file and adds the fields it contains to the preview
