@@ -27,6 +27,11 @@ preview_frame = tk.Frame(
     master=window
     )
 
+toolbar_frame = tk.Frame(
+    master = window,
+    bg = 'red'
+    )
+
 scroll = tk.Scrollbar(master = preview_frame, orient='horizontal')
 #scroll.grid(row=1, column=0, sticky='EW')#pack(side=tk.BOTTOM, fill='x')
 preview = tk.Text(master = preview_frame, wrap=tk.NONE, xscrollcommand=scroll.set)
@@ -264,8 +269,13 @@ importBtn = tk.Button(
     master = lower_frame
     )
 
-preview_frame.grid(row=0, column=0, sticky='NESW')
-lower_frame.grid(row=1, column=0)
+instructionsBtn = tk.Button(
+    text = 'Help',
+    master = toolbar_frame)
+
+toolbar_frame.grid(row=0, column=0)
+preview_frame.grid(row=1, column=0, sticky='NESW')
+lower_frame.grid(row=2, column=0)
 side_frame.grid(row=0, column=1)
 
 #lower frame
@@ -274,11 +284,14 @@ importBtn.grid(row=1, column=0)
 submitBtn.grid(row=2, column=0)
 
 #side frame
-fieldNameLabel.grid(row=0, column=0)
+fieldNameLabel.grid(row=1, column=0)
 fieldName.grid(row=1, column=0)
 fieldDefaultLabel.grid(row=2, column=0)
 fieldDefault.grid(row=3, column=0)
 fieldBtn.grid(row=4, column=0)
+
+#toolbar frame
+instructionsBtn.grid(row=0, column=0)
 
 instructionsLabel.grid(row=1, column=1)
 
