@@ -3,10 +3,11 @@ from tkinter import filedialog as fd
 from os import listdir
 from os.path import isfile, join
 import xml.etree.ElementTree as ET
+from PIL import ImageTk, Image
 import yaml
 
 window = tk.Tk()
-window.geometry('1700x700')
+window.geometry('1300x700')
 window.title('Metadata Tool')
 
 window.columnconfigure(0, weight=1, minsize=200)
@@ -28,8 +29,13 @@ preview_frame = tk.Frame(
     )
 
 toolbar_frame = tk.Frame(
-    master = window,
-    bg = 'red'
+    master = window
+    )
+
+logo_frame = tk.Frame(
+    master=window,
+    width=10,
+    height=10
     )
 
 scroll = tk.Scrollbar(master = preview_frame, orient='horizontal')
@@ -39,12 +45,21 @@ fieldName = tk.Entry(master=side_frame)
 fieldDefault = tk.Entry(side_frame)
 fieldNameLabel = tk.Label(text='Field to add', master=side_frame)
 fieldDefaultLabel = tk.Label(text='Default value', master=side_frame)
-instructionsLabel = tk.Label(text='Instructions for use: \n 1. Put all the files you wish to create metadata \n for into one folder, then select this folder \n 2. The files within this folder will appear in the preview. \n From here you can add fields by either \n importing a config file containing all \n the fields. Alternatively you can add fields \n individually by entering the name of the field  \n and optionally a default value \n 3. From here you can modify the values as necessary \n 4. Click the "Save as .txt" button to finalise the folder')
-instructionsLabel.bind('<Configure>', lambda e: instructionsLabel.config(wraplength=instructionsLabel.winfo_width()))
 preview.insert('1.0', 'Start by selecting a folder containing the files to be uploaded')
 preview.grid(row=0, column=0)
+
+#logo = ImageTk.PhotoImage(Image.open('wacl.png'))
+logo = Image.open('wacl.png')
+#logo = logo.resize(()
+logo_resized = logo.resize((350, 250))
+logo_photo_image = ImageTk.PhotoImage(logo_resized)
+logo_label = tk.Label(master = window, image = logo_photo_image)
+
+
+
+#logo_canvas.create_image(100, 100, anchor = 'nw', image = logo)
 #scroll.config(command=preview.xview)
-    
+
 noOfFiles = 0
 grid = [[]]
 
@@ -96,6 +111,22 @@ def getLineNo():
     
     return lines
 
+"""
+Displays instructions for using the tool in a popup window
+
+Upon clicking the "Help" button, a new window is created, inside of which is a label containing the instructions,
+and a button, which will close the window when clicked.
+
+"""
+def showInstructions():
+    popupWindow = tk.Tk()
+    popupWindow.title('Instructions')
+    label = tk.Label(popupWindow, text = 'Instructions for use: \n 1. Put all the files you wish to create metadata \n for into one folder, then select this folder \n 2. The files within this folder will appear in the preview. \n From here you can add fields by either \n importing a config file containing all \n the fields. Alternatively you can add fields \n individually by entering the name of the field  \n and optionally a default value \n 3. From here you can modify the values as necessary \n 4. Click the "Save as .txt" button to finalise the folder')
+    label.pack()
+    closeButton = tk.Button(popupWindow, text = 'Close', command = popupWindow.destroy)
+    closeButton.pack()
+    popupWindow.mainloop()
+
 
 """
 Adds all files in a folder to a directory
@@ -131,7 +162,7 @@ def addFiles():
 
 
 """
-Adds a new field to the gridS
+Adds a new field to the grid
 
 Appends a new entry containing the field name to the first line and the default value to subsequent lists.
 These entries are then added to the preview frame using the grid method in the position corresponding to
@@ -243,9 +274,9 @@ def importConfig():
 
 
 filesBtn = tk.Button(
-    text = 'Select Folder',
+    text = 'Create new file',
     command=addFiles,
-    master = lower_frame
+    master = toolbar_frame
     )
 
 fieldBtn = tk.Button(
@@ -271,28 +302,31 @@ importBtn = tk.Button(
 
 instructionsBtn = tk.Button(
     text = 'Help',
-    master = toolbar_frame)
+    master = toolbar_frame,
+    command = showInstructions
+    )
 
-toolbar_frame.grid(row=0, column=0)
+toolbar_frame.grid(row=0, column=0, sticky = 'NESW')
 preview_frame.grid(row=1, column=0, sticky='NESW')
 lower_frame.grid(row=2, column=0)
-side_frame.grid(row=0, column=1)
+side_frame.grid(row=1, column=1)
+logo_label.grid(row=2, column=1, sticky='NESW')
 
 #lower frame
-filesBtn.grid(row=0, column=0)
 importBtn.grid(row=1, column=0)
 submitBtn.grid(row=2, column=0)
 
 #side frame
-fieldNameLabel.grid(row=1, column=0)
+fieldNameLabel.grid(row=0, column=0)
 fieldName.grid(row=1, column=0)
 fieldDefaultLabel.grid(row=2, column=0)
 fieldDefault.grid(row=3, column=0)
 fieldBtn.grid(row=4, column=0)
 
 #toolbar frame
-instructionsBtn.grid(row=0, column=0)
+filesBtn.grid(row=0, column=0)
+instructionsBtn.grid(row=0, column=1)
 
-instructionsLabel.grid(row=1, column=1)
+#imageLabel.pack()
 
 window.mainloop()
