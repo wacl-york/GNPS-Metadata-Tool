@@ -48,16 +48,13 @@ fieldDefaultLabel = tk.Label(text='Default value', master=side_frame)
 preview.insert('1.0', 'Start by selecting a folder containing the files to be uploaded')
 preview.grid(row=0, column=0)
 
-#logo = ImageTk.PhotoImage(Image.open('wacl.png'))
+#Opens logo in a PIL format so it can be resized
 logo = Image.open('wacl.png')
-#logo = logo.resize(()
 logo_resized = logo.resize((350, 250))
+#Resized photo is used to create a new object tkinter will accept
 logo_photo_image = ImageTk.PhotoImage(logo_resized)
 logo_label = tk.Label(master = window, image = logo_photo_image)
 
-
-
-#logo_canvas.create_image(100, 100, anchor = 'nw', image = logo)
 #scroll.config(command=preview.xview)
 
 noOfFiles = 0
