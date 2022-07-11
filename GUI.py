@@ -3,10 +3,12 @@ from tkinter import filedialog as fd
 from os import listdir
 from os.path import isfile, join
 import xml.etree.ElementTree as ET
+from PIL import ImageTk, Image
 import yaml
+import csv
 
 window = tk.Tk()
-window.geometry('1700x700')
+window.geometry('1200x700')
 window.title('Metadata Tool')
 
 window.columnconfigure(0, weight=1, minsize=200)
@@ -27,19 +29,35 @@ preview_frame = tk.Frame(
     master=window
     )
 
+toolbar_frame = tk.Frame(
+    master = window
+    )
+
+logo_frame = tk.Frame(
+    master=window,
+    width=10,
+    height=10
+    )
+
 scroll = tk.Scrollbar(master = preview_frame, orient='horizontal')
-scroll.grid(row=1, column=0, sticky='EW')#pack(side=tk.BOTTOM, fill='x')
+#scroll.grid(row=1, column=0, sticky='EW')#pack(side=tk.BOTTOM, fill='x')
 preview = tk.Text(master = preview_frame, wrap=tk.NONE, xscrollcommand=scroll.set)
 fieldName = tk.Entry(master=side_frame)
 fieldDefault = tk.Entry(side_frame)
 fieldNameLabel = tk.Label(text='Field to add', master=side_frame)
 fieldDefaultLabel = tk.Label(text='Default value', master=side_frame)
-instructionsLabel = tk.Label(text='Instructions for use: \n 1. Put all the files you wish to create metadata \n for into one folder, then select this folder \n 2. The files within this folder will appear in the preview. \n From here you can add fields by either \n importing a config file containing all \n the fields. Alternatively you can add fields \n individually by entering the name of the field  \n and optionally a default value \n 3. From here you can modify the values as necessary \n 4. Click the "Save as .txt" button to finalise the folder')
-instructionsLabel.bind('<Configure>', lambda e: instructionsLabel.config(wraplength=instructionsLabel.winfo_width()))
 preview.insert('1.0', 'Start by selecting a folder containing the files to be uploaded')
 preview.grid(row=0, column=0)
-scroll.config(command=preview.xview)
-    
+
+#Opens logo in a PIL format so it can be resized
+logo = Image.open('wacl.png')
+logo_resized = logo.resize((350, 250))
+#Resized photo is used to create a new object tkinter will accept
+logo_photo_image = ImageTk.PhotoImage(logo_resized)
+logo_label = tk.Label(master = window, image = logo_photo_image)
+
+#scroll.config(command=preview.xview)
+
 noOfFiles = 0
 grid = [[]]
 
@@ -91,6 +109,22 @@ def getLineNo():
     
     return lines
 
+"""
+Displays instructions for using the tool in a popup window
+
+Upon clicking the "Help" button, a new window is created, inside of which is a label containing the instructions,
+and a button, which will close the window when clicked.
+
+"""
+def showInstructions():
+    popupWindow = tk.Tk()
+    popupWindow.title('Instructions')
+    label = tk.Label(popupWindow, text = 'Instructions for use: \n 1. Put all the files you wish to create metadata \n for into one folder, then select this folder \n 2. The files within this folder will appear in the preview. \n From here you can add fields by either \n importing a config file containing all \n the fields. Alternatively you can add fields \n individually by entering the name of the field  \n and optionally a default value \n 3. From here you can modify the values as necessary \n 4. Click the "Save as .txt" button to finalise the folder')
+    label.pack()
+    closeButton = tk.Button(popupWindow, text = 'Close', command = popupWindow.destroy)
+    closeButton.pack()
+    popupWindow.mainloop()
+
 
 """
 Adds all files in a folder to a directory
@@ -100,17 +134,20 @@ iteratively added to each line.
 """
 def addFiles():
     global noOfFiles
-    #global grid
+    global grid
     noOfFiles = 0
     #Gets the files to add to the preview
     directoryToAdd = fd.askdirectory()
     if directoryToAdd != ():
+        grid = [[]]
         preview.grid_forget()
         filesToAdd = [file for file in listdir(directoryToAdd) if isfile(join(directoryToAdd, file))]
         grid[0].append(tk.Entry(master = preview_frame))
         grid[0][0].insert(0, 'filename')
         grid[0][0].grid(row=0, column=0)
         row = 1
+        #Creates an Entry object in grid, which corresponds to it's position in the the preview,
+        #which is then placed in the appropriate spot using the .grid method
         for eachFile in filesToAdd:
             grid.append([])
             grid[row].append(tk.Entry(master = preview_frame))
@@ -121,13 +158,42 @@ def addFiles():
         fieldBtn['state']=tk.NORMAL
         submitBtn['state']=tk.NORMAL
         importBtn['state']=tk.NORMAL
+        scroll.grid(row=row, column=0, sticky='EW')
+        scroll.config(command=preview.xview)
+
+
+def openFile():
+    global grid
+    filePath = fd.askopenfilename(filetypes=(("Metadata file", "*.txt"),))
+    if filePath != '':
+        preview.grid_forget()
+        grid = []
+        with open(filePath) as file:
+            tsv_file = csv.reader(file, delimiter="\t")
+            row_no = 0
+            for line in tsv_file:
+                grid.append([])
+                field_no = 0
+                for field in line:
+                    grid[row_no].append(tk.Entry(master = preview_frame))
+                    grid[row_no][field_no].insert(0, field)
+                    grid[row_no][field_no].grid(row=row_no, column = field_no)
+                    field_no += 1
+
+                row_no += 1
+
+        fieldBtn['state']=tk.NORMAL
+        submitBtn['state']=tk.NORMAL
+        importBtn['state']=tk.NORMAL
+
 
 
 """
-Adds a new field to the preview
+Adds a new field to the grid
 
-Adds a field name to the top line and the default value to subsequent lines. All lines after the first are checked to find
-the end of the line, allowing the default value to be inserted in the correct place.
+Appends a new entry containing the field name to the first line and the default value to subsequent lists.
+These entries are then added to the preview frame using the grid method in the position corresponding to
+it's location in the 2d list
 """
 def addField():
     field = fieldName.get()
@@ -153,19 +219,37 @@ def submit():
         if path.find('.') != -1:
             path = path[0:path.find('.')]
             path += '.txt'
-            
+
+            writeFile = open(path, 'w')
+            for each_line in grid:
+                new_line = True
+                for each_field in each_line:
+                    if new_line == True:
+                        new_line = False
+                        writeFile.write(each_field.get())
+                    else:
+                        writeFile.write('\t')
+                        writeFile.write(each_field.get())
+
+                writeFile.write('\n')
+                        
+                
+                    
+
+        """
         fileContents = preview.get('1.0', tk.END)
         fileContents = fileContents.replace(',', '\t')
         writeFile = open(path, 'w')
         writeFile.write(fileContents)
         writeFile.close()
+        """
 
 """
 Reads in a yaml file and adds the fields it contains to the preview
 
 User selects a file, which is then parsed to get two lists containing the names
 and default values of each field. These two lists are then iterated through to
-add all the fields to the preview in the same manner as addFiles()
+add all the fields to the grid in the same manner as addFiles()
 """
 def importConfig():
     #User selects config file
@@ -217,9 +301,15 @@ def importConfig():
 
 
 filesBtn = tk.Button(
-    text = 'Select Folder',
+    text = 'Create new file',
     command=addFiles,
-    master = lower_frame
+    master = toolbar_frame
+    )
+
+openBtn = tk.Button(
+    text = 'Open file',
+    command=openFile,
+    master = toolbar_frame
     )
 
 fieldBtn = tk.Button(
@@ -243,12 +333,19 @@ importBtn = tk.Button(
     master = lower_frame
     )
 
-preview_frame.grid(row=0, column=0, sticky='NESW')
-lower_frame.grid(row=1, column=0)
-side_frame.grid(row=0, column=1)
+instructionsBtn = tk.Button(
+    text = 'Help',
+    master = toolbar_frame,
+    command = showInstructions
+    )
+
+toolbar_frame.grid(row=0, column=0, sticky = 'NESW')
+preview_frame.grid(row=1, column=0, sticky='NESW')
+lower_frame.grid(row=2, column=0)
+side_frame.grid(row=1, column=1)
+logo_label.grid(row=2, column=1, sticky='NESW')
 
 #lower frame
-filesBtn.grid(row=0, column=0)
 importBtn.grid(row=1, column=0)
 submitBtn.grid(row=2, column=0)
 
@@ -259,6 +356,11 @@ fieldDefaultLabel.grid(row=2, column=0)
 fieldDefault.grid(row=3, column=0)
 fieldBtn.grid(row=4, column=0)
 
-instructionsLabel.grid(row=1, column=1)
+#toolbar frame
+filesBtn.grid(row=0, column=0)
+openBtn.grid(row=0, column=1)
+instructionsBtn.grid(row=0, column=2)
+
+#imageLabel.pack()
 
 window.mainloop()

@@ -1,6 +1,6 @@
 fields:
         - Name: Sample Type
-          Default: 
+          Default: Gas 
         - Name: Sample Date
           Default: 
         - Name: Sample Location
@@ -19,8 +19,8 @@ fields:
           Default:
         - Name: Sample Injection Solvent
           Default:
-        - Name:
-          Default: Direct Injection or Chromatography
+        - Name: Direct Injection or Chromatography
+          Default:
         - Name: Mobile phases and Modifiers
           Default:
         - Name: Column
