@@ -5,9 +5,10 @@ from os.path import isfile, join
 import xml.etree.ElementTree as ET
 from PIL import ImageTk, Image
 import yaml
+import csv
 
 window = tk.Tk()
-window.geometry('1300x700')
+window.geometry('1200x700')
 window.title('Metadata Tool')
 
 window.columnconfigure(0, weight=1, minsize=200)
@@ -133,17 +134,20 @@ iteratively added to each line.
 """
 def addFiles():
     global noOfFiles
-    #global grid
+    global grid
     noOfFiles = 0
     #Gets the files to add to the preview
     directoryToAdd = fd.askdirectory()
     if directoryToAdd != ():
+        grid = [[]]
         preview.grid_forget()
         filesToAdd = [file for file in listdir(directoryToAdd) if isfile(join(directoryToAdd, file))]
         grid[0].append(tk.Entry(master = preview_frame))
         grid[0][0].insert(0, 'filename')
         grid[0][0].grid(row=0, column=0)
         row = 1
+        #Creates an Entry object in grid, which corresponds to it's position in the the preview,
+        #which is then placed in the appropriate spot using the .grid method
         for eachFile in filesToAdd:
             grid.append([])
             grid[row].append(tk.Entry(master = preview_frame))
@@ -156,6 +160,32 @@ def addFiles():
         importBtn['state']=tk.NORMAL
         scroll.grid(row=row, column=0, sticky='EW')
         scroll.config(command=preview.xview)
+
+
+def openFile():
+    global grid
+    filePath = fd.askopenfilename(filetypes=(("Metadata file", "*.txt"),))
+    if filePath != '':
+        preview.grid_forget()
+        grid = []
+        with open(filePath) as file:
+            tsv_file = csv.reader(file, delimiter="\t")
+            row_no = 0
+            for line in tsv_file:
+                grid.append([])
+                field_no = 0
+                for field in line:
+                    grid[row_no].append(tk.Entry(master = preview_frame))
+                    grid[row_no][field_no].insert(0, field)
+                    grid[row_no][field_no].grid(row=row_no, column = field_no)
+                    field_no += 1
+
+                row_no += 1
+
+        fieldBtn['state']=tk.NORMAL
+        submitBtn['state']=tk.NORMAL
+        importBtn['state']=tk.NORMAL
+
 
 
 """
@@ -276,6 +306,12 @@ filesBtn = tk.Button(
     master = toolbar_frame
     )
 
+openBtn = tk.Button(
+    text = 'Open file',
+    command=openFile,
+    master = toolbar_frame
+    )
+
 fieldBtn = tk.Button(
     text = 'Add field',
     command = addField,
@@ -322,7 +358,8 @@ fieldBtn.grid(row=4, column=0)
 
 #toolbar frame
 filesBtn.grid(row=0, column=0)
-instructionsBtn.grid(row=0, column=1)
+openBtn.grid(row=0, column=1)
+instructionsBtn.grid(row=0, column=2)
 
 #imageLabel.pack()
 
