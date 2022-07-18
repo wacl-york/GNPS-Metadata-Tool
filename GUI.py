@@ -39,9 +39,21 @@ logo_frame = tk.Frame(
     height=10
     )
 
-scroll = tk.Scrollbar(master = preview_frame, orient='horizontal')
-#scroll.grid(row=1, column=0, sticky='EW')#pack(side=tk.BOTTOM, fill='x')
-preview = tk.Text(master = preview_frame, wrap=tk.NONE, xscrollcommand=scroll.set)
+grid_canvas = tk.Canvas(
+    master = preview_frame,
+    width = 500,
+    height = 200
+    )
+
+entry_frame = tk.Frame(
+    master = grid_canvas
+    )
+
+grid_canvas.create_window((0, 0), window=entry_frame, anchor='nw')
+
+vscroll = tk.Scrollbar(master = preview_frame, orient = 'vertical', command = grid_canvas.yview)
+hscroll = tk.Scrollbar(master = preview_frame, orient = 'horizontal', command = grid_canvas.xview)
+preview = tk.Text(master = preview_frame)
 fieldName = tk.Entry(master=side_frame)
 fieldDefault = tk.Entry(side_frame)
 fieldNameLabel = tk.Label(text='Field to add', master=side_frame)
@@ -55,8 +67,6 @@ logo_resized = logo.resize((350, 250))
 #Resized photo is used to create a new object tkinter will accept
 logo_photo_image = ImageTk.PhotoImage(logo_resized)
 logo_label = tk.Label(master = window, image = logo_photo_image)
-
-#scroll.config(command=preview.xview)
 
 noOfFiles = 0
 grid = [[]]
@@ -142,7 +152,7 @@ def addFiles():
         grid = [[]]
         preview.grid_forget()
         filesToAdd = [file for file in listdir(directoryToAdd) if isfile(join(directoryToAdd, file))]
-        grid[0].append(tk.Entry(master = preview_frame))
+        grid[0].append(tk.Entry(master = entry_frame))
         grid[0][0].insert(0, 'filename')
         grid[0][0].grid(row=0, column=0)
         row = 1
@@ -150,7 +160,7 @@ def addFiles():
         #which is then placed in the appropriate spot using the .grid method
         for eachFile in filesToAdd:
             grid.append([])
-            grid[row].append(tk.Entry(master = preview_frame))
+            grid[row].append(tk.Entry(master = entry_frame))
             grid[row][0].insert(0, eachFile)
             grid[row][0].grid(row = row, column = 0)
             row += 1
@@ -158,8 +168,8 @@ def addFiles():
         fieldBtn['state']=tk.NORMAL
         submitBtn['state']=tk.NORMAL
         importBtn['state']=tk.NORMAL
-        scroll.grid(row=row, column=0, sticky='EW')
-        scroll.config(command=preview.xview)
+        grid_canvas.config(scrollregion=grid_canvas.bbox("all"))
+        #grid_canvas.config(scrollregion=grid_canvas.bbox("all"), width = 50, height = 50)
 
 
 def openFile():
@@ -175,7 +185,7 @@ def openFile():
                 grid.append([])
                 field_no = 0
                 for field in line:
-                    grid[row_no].append(tk.Entry(master = preview_frame))
+                    grid[row_no].append(tk.Entry(master = entry_frame))
                     grid[row_no][field_no].insert(0, field)
                     grid[row_no][field_no].grid(row=row_no, column = field_no)
                     field_no += 1
@@ -185,6 +195,8 @@ def openFile():
         fieldBtn['state']=tk.NORMAL
         submitBtn['state']=tk.NORMAL
         importBtn['state']=tk.NORMAL
+        #grid_canvas.config(scrollregion=grid_canvas.bbox("all"))
+        #grid_canvas.config(scrollregion=grid_canvas.bbox("all"), width = 50, height = 50)
 
 
 
@@ -200,15 +212,18 @@ def addField():
     default = fieldDefault.get()
     fieldName.delete(0, tk.END)
     fieldDefault.delete(0, tk.END)
-    grid[0].append(tk.Entry(master = preview_frame))
+    grid[0].append(tk.Entry(master = entry_frame))
     grid[0][-1].insert(0, 'ATTRIBUTE_'+field)
     grid[0][-1].grid(row=0, column = len(grid[0])-1)
     row_no = 1
     for each_line in range(len(grid)-1):
-        grid[row_no].append(tk.Entry(master=preview_frame))
+        grid[row_no].append(tk.Entry(master = entry_frame))
         grid[row_no][-1].insert(0, default)
         grid[row_no][-1].grid(row=row_no, column = len(grid[row_no]) - 1)
         row_no += 1
+
+    
+    #grid_canvas.config(scrollregion=grid_canvas.bbox("all"), width = 50, height = 50)
 
 
 def submit():
@@ -276,15 +291,17 @@ def importConfig():
         for each_field in range(len(names)):
             field = names[each_field]
             default = values[each_field]
-            grid[0].append(tk.Entry(master = preview_frame))
+            grid[0].append(tk.Entry(master = grid_canvas))
             grid[0][-1].insert(0, 'ATTRIBUTE_'+field)
             grid[0][-1].grid(row=0, column = len(grid[0])-1)
             row_no = 1
             for each_line in range(len(grid)-1):
-                grid[row_no].append(tk.Entry(master=preview_frame))
+                grid[row_no].append(tk.Entry(master = grid_canvas))
                 grid[row_no][-1].insert(0, default)
                 grid[row_no][-1].grid(row=row_no, column = len(grid[row_no]) - 1)
                 row_no += 1
+
+        #grid_canvas.config(scrollregion=grid_canvas.bbox("all"), width = 50, height = 50)
                 
             """
             insertIndex = getEnd(1)
@@ -341,6 +358,14 @@ instructionsBtn = tk.Button(
 
 toolbar_frame.grid(row=0, column=0, sticky = 'NESW')
 preview_frame.grid(row=1, column=0, sticky='NESW')
+grid_canvas.grid(row=0, column=0)
+grid_canvas.grid_rowconfigure(0, weight=1)
+grid_canvas.grid_columnconfigure(0, weight=1)
+grid_canvas.configure(yscrollcommand = vscroll.set)
+grid_canvas.configure(xscrollcommand = hscroll.set)
+preview_frame.grid_propagate(False)
+vscroll.grid(row=0, column=1, sticky = 'NS')
+hscroll.grid(row=1, column=0, sticky = 'EW')
 lower_frame.grid(row=2, column=0)
 side_frame.grid(row=1, column=1)
 logo_label.grid(row=2, column=1, sticky='NESW')
