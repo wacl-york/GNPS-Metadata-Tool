@@ -41,7 +41,7 @@ logo_frame = tk.Frame(
 
 grid_canvas = tk.Canvas(
     master = preview_frame,
-    width = 500,
+    width = 700,
     height = 200
     )
 
@@ -60,6 +60,8 @@ fieldNameLabel = tk.Label(text='Field to add', master=side_frame)
 fieldDefaultLabel = tk.Label(text='Default value', master=side_frame)
 preview.insert('1.0', 'Start by selecting a folder containing the files to be uploaded')
 preview.grid(row=0, column=0)
+entry_frame.bind("<Configure>", grid_canvas.configure(scrollregion=grid_canvas.bbox("all")))
+#grid_canvas.config(scrollregion=grid_canvas.bbox("all"))
 
 #Opens logo in a PIL format so it can be resized
 logo = Image.open('wacl.png')
@@ -70,6 +72,10 @@ logo_label = tk.Label(master = window, image = logo_photo_image)
 
 noOfFiles = 0
 grid = [[]]
+
+def adjustScrollRegion():
+    print('adjust')
+    grid_canvas.config(scrollregion=grid_canvas.bbox("all"))
 
 
 """
@@ -119,7 +125,7 @@ def getLineNo():
     
     return lines
 
-"""
+""" 
 Displays instructions for using the tool in a popup window
 
 Upon clicking the "Help" button, a new window is created, inside of which is a label containing the instructions,
@@ -168,6 +174,7 @@ def addFiles():
         fieldBtn['state']=tk.NORMAL
         submitBtn['state']=tk.NORMAL
         importBtn['state']=tk.NORMAL
+        entry_frame.update_idletasks()
         grid_canvas.config(scrollregion=grid_canvas.bbox("all"))
         #grid_canvas.config(scrollregion=grid_canvas.bbox("all"), width = 50, height = 50)
 
@@ -195,7 +202,8 @@ def openFile():
         fieldBtn['state']=tk.NORMAL
         submitBtn['state']=tk.NORMAL
         importBtn['state']=tk.NORMAL
-        #grid_canvas.config(scrollregion=grid_canvas.bbox("all"))
+        entry_frame.update_idletasks()
+        grid_canvas.config(scrollregion=grid_canvas.bbox("all"))
         #grid_canvas.config(scrollregion=grid_canvas.bbox("all"), width = 50, height = 50)
 
 
@@ -222,7 +230,8 @@ def addField():
         grid[row_no][-1].grid(row=row_no, column = len(grid[row_no]) - 1)
         row_no += 1
 
-    
+    entry_frame.update_idletasks()
+    grid_canvas.config(scrollregion=grid_canvas.bbox("all"))
     #grid_canvas.config(scrollregion=grid_canvas.bbox("all"), width = 50, height = 50)
 
 
@@ -301,20 +310,22 @@ def importConfig():
                 grid[row_no][-1].grid(row=row_no, column = len(grid[row_no]) - 1)
                 row_no += 1
 
+        entry_frame.update_idletasks()
+        grid_canvas.config(scrollregion=grid_canvas.bbox("all"))
         #grid_canvas.config(scrollregion=grid_canvas.bbox("all"), width = 50, height = 50)
                 
-            """
-            insertIndex = getEnd(1)
-            locationToInsert = '1.' + str(insertIndex)
-            preview.insert(locationToInsert, ', ATTRIBUTE_' + field)
-            #Adds the default value to the end of each line except the first
+        """
+        insertIndex = getEnd(1)
+        locationToInsert = '1.' + str(insertIndex)
+        preview.insert(locationToInsert, ', ATTRIBUTE_' + field)
+        #Adds the default value to the end of each line except the first
 
-            #There needs to be two less lines due to the lack of zero-indexing and the first line being irrelevant here
-            for each_line in range(preview.get('1.0', tk.END).count('\n') - 2):
-                lineNo = each_line + 2 #Similiarly, the working line is increased by two to ensure the first line is skipped
-                insertIndex = getEnd(lineNo)
-                preview.insert(str(lineNo) + '.' + str(insertIndex), ', ' + default)
-            """
+        #There needs to be two less lines due to the lack of zero-indexing and the first line being irrelevant here
+        for each_line in range(preview.get('1.0', tk.END).count('\n') - 2):
+            lineNo = each_line + 2 #Similiarly, the working line is increased by two to ensure the first line is skipped
+            insertIndex = getEnd(lineNo)
+            preview.insert(str(lineNo) + '.' + str(insertIndex), ', ' + default)
+        """
 
 
 filesBtn = tk.Button(
@@ -387,5 +398,7 @@ openBtn.grid(row=0, column=1)
 instructionsBtn.grid(row=0, column=2)
 
 #imageLabel.pack()
+
+#window.after(1, adjustScrollRegion)
 
 window.mainloop()
