@@ -8,6 +8,7 @@ import yaml
 import csv
 
 window = tk.Tk()
+#window.configure(background='black')
 window.geometry('1200x700')
 window.title('Metadata Tool')
 
@@ -41,8 +42,8 @@ logo_frame = tk.Frame(
 
 grid_canvas = tk.Canvas(
     master = preview_frame,
-    width = 700,
-    height = 200
+    height = 200,
+    width = 700
     )
 
 entry_frame = tk.Frame(
@@ -60,8 +61,7 @@ fieldNameLabel = tk.Label(text='Field to add', master=side_frame)
 fieldDefaultLabel = tk.Label(text='Default value', master=side_frame)
 preview.insert('1.0', 'Start by selecting a folder containing the files to be uploaded')
 preview.grid(row=0, column=0)
-entry_frame.bind("<Configure>", grid_canvas.configure(scrollregion=grid_canvas.bbox("all")))
-#grid_canvas.config(scrollregion=grid_canvas.bbox("all"))
+#entry_frame.bind("<Configure>", grid_canvas.configure(scrollregion=grid_canvas.bbox("all")))
 
 #Opens logo in a PIL format so it can be resized
 logo = Image.open('wacl.png')
@@ -74,8 +74,22 @@ noOfFiles = 0
 grid = [[]]
 
 def adjustScrollRegion():
-    print('adjust')
-    grid_canvas.config(scrollregion=grid_canvas.bbox("all"))
+    entry_frame.update_idletasks()
+    
+    if len(grid[0]) > 4:
+        #Constant assigned from experience
+        canvas_width = 700
+    else:
+        canvas_width = len((grid[0]) * grid[0][0].winfo_width())
+
+    if len(grid) > 9:
+        canvas_height = 200
+    else:
+        canvas_height = len(grid) * grid[0][0].winfo_height()
+    
+    grid_canvas.config(scrollregion=grid_canvas.bbox("all"), width = canvas_width, height = canvas_height)
+    
+    
 
 
 """
@@ -174,9 +188,7 @@ def addFiles():
         fieldBtn['state']=tk.NORMAL
         submitBtn['state']=tk.NORMAL
         importBtn['state']=tk.NORMAL
-        entry_frame.update_idletasks()
-        grid_canvas.config(scrollregion=grid_canvas.bbox("all"))
-        #grid_canvas.config(scrollregion=grid_canvas.bbox("all"), width = 50, height = 50)
+        adjustScrollRegion()
 
 
 def openFile():
@@ -202,9 +214,7 @@ def openFile():
         fieldBtn['state']=tk.NORMAL
         submitBtn['state']=tk.NORMAL
         importBtn['state']=tk.NORMAL
-        entry_frame.update_idletasks()
-        grid_canvas.config(scrollregion=grid_canvas.bbox("all"))
-        #grid_canvas.config(scrollregion=grid_canvas.bbox("all"), width = 50, height = 50)
+        adjustScrollRegion()
 
 
 
@@ -230,9 +240,7 @@ def addField():
         grid[row_no][-1].grid(row=row_no, column = len(grid[row_no]) - 1)
         row_no += 1
 
-    entry_frame.update_idletasks()
-    grid_canvas.config(scrollregion=grid_canvas.bbox("all"))
-    #grid_canvas.config(scrollregion=grid_canvas.bbox("all"), width = 50, height = 50)
+    adjustScrollRegion()
 
 
 def submit():
@@ -310,9 +318,7 @@ def importConfig():
                 grid[row_no][-1].grid(row=row_no, column = len(grid[row_no]) - 1)
                 row_no += 1
 
-        entry_frame.update_idletasks()
-        grid_canvas.config(scrollregion=grid_canvas.bbox("all"))
-        #grid_canvas.config(scrollregion=grid_canvas.bbox("all"), width = 50, height = 50)
+        adjustScrollRegion()
                 
         """
         insertIndex = getEnd(1)
@@ -398,7 +404,5 @@ openBtn.grid(row=0, column=1)
 instructionsBtn.grid(row=0, column=2)
 
 #imageLabel.pack()
-
-#window.after(1, adjustScrollRegion)
 
 window.mainloop()
