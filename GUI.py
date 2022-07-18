@@ -264,6 +264,14 @@ def submit():
                         writeFile.write(each_field.get())
 
                 writeFile.write('\n')
+                feedbackWindow = tk.Tk()
+                feedbackWindow.title('File saved')
+                label = tk.Label(feedbackWindow, text = 'File saved successfully')
+                label.pack()
+                closeButton = tk.Button(feedbackWindow, text = 'Close', command = feedbackWindow.destroy)
+                closeButton.pack()
+                feedbackWindow.mainloop()
+                
                         
                 
                     
