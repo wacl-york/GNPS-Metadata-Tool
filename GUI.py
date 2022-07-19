@@ -59,7 +59,7 @@ fieldName = tk.Entry(master=side_frame)
 fieldDefault = tk.Entry(side_frame)
 fieldNameLabel = tk.Label(text='Field to add', master=side_frame)
 fieldDefaultLabel = tk.Label(text='Default value', master=side_frame)
-preview.insert('1.0', 'Start by selecting a folder containing the files to be uploaded')
+preview.insert('1.0', 'Select one of the buttons above to start creating a metadata file')
 preview.grid(row=0, column=0)
 #entry_frame.bind("<Configure>", grid_canvas.configure(scrollregion=grid_canvas.bbox("all")))
 
@@ -343,13 +343,13 @@ def importConfig():
 
 
 filesBtn = tk.Button(
-    text = 'Create new file',
+    text = 'Create new metadata file',
     command=addFiles,
     master = toolbar_frame
     )
 
 openBtn = tk.Button(
-    text = 'Open file',
+    text = 'Open metadata file',
     command=openFile,
     master = toolbar_frame
     )
