@@ -54,12 +54,11 @@ grid_canvas.create_window((0, 0), window=entry_frame, anchor='nw')
 
 vscroll = tk.Scrollbar(master = preview_frame, orient = 'vertical', command = grid_canvas.yview)
 hscroll = tk.Scrollbar(master = preview_frame, orient = 'horizontal', command = grid_canvas.xview)
-preview = tk.Text(master = preview_frame)
+preview = tk.Label(master = preview_frame, text = 'Select one of the buttons above to start creating a metadata file', anchor = 'nw')
 fieldName = tk.Entry(master=side_frame)
 fieldDefault = tk.Entry(side_frame)
 fieldNameLabel = tk.Label(text='Field to add', master=side_frame)
 fieldDefaultLabel = tk.Label(text='Default value', master=side_frame)
-preview.insert('1.0', 'Select one of the buttons above to start creating a metadata file')
 preview.grid(row=0, column=0)
 #entry_frame.bind("<Configure>", grid_canvas.configure(scrollregion=grid_canvas.bbox("all")))
 
@@ -188,6 +187,8 @@ def addFiles():
         fieldBtn['state']=tk.NORMAL
         submitBtn['state']=tk.NORMAL
         importBtn['state']=tk.NORMAL
+        vscroll.grid(row=0, column=1, sticky = 'NS')
+        hscroll.grid(row=1, column=0, sticky = 'EW')
         adjustScrollRegion()
 
 
@@ -214,6 +215,8 @@ def openFile():
         fieldBtn['state']=tk.NORMAL
         submitBtn['state']=tk.NORMAL
         importBtn['state']=tk.NORMAL
+        vscroll.grid(row=0, column=1, sticky = 'NS')
+        hscroll.grid(row=1, column=0, sticky = 'EW')
         adjustScrollRegion()
 
 
@@ -389,8 +392,8 @@ grid_canvas.grid_columnconfigure(0, weight=1)
 grid_canvas.configure(yscrollcommand = vscroll.set)
 grid_canvas.configure(xscrollcommand = hscroll.set)
 preview_frame.grid_propagate(False)
-vscroll.grid(row=0, column=1, sticky = 'NS')
-hscroll.grid(row=1, column=0, sticky = 'EW')
+#vscroll.grid(row=0, column=1, sticky = 'NS')
+#hscroll.grid(row=1, column=0, sticky = 'EW')
 lower_frame.grid(row=2, column=0)
 side_frame.grid(row=1, column=1)
 logo_label.grid(row=2, column=1, sticky='NESW')
