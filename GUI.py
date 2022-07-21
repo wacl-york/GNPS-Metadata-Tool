@@ -321,12 +321,12 @@ def importConfig():
         for each_field in range(len(names)):
             field = names[each_field]
             default = values[each_field]
-            grid[0].append(tk.Entry(master = grid_canvas))
+            grid[0].append(tk.Entry(master = entry_frame))
             grid[0][-1].insert(0, 'ATTRIBUTE_'+field)
             grid[0][-1].grid(row=0, column = len(grid[0])-1)
             row_no = 1
             for each_line in range(len(grid)-1):
-                grid[row_no].append(tk.Entry(master = grid_canvas))
+                grid[row_no].append(tk.Entry(master = entry_frame))
                 grid[row_no][-1].insert(0, default)
                 grid[row_no][-1].grid(row=row_no, column = len(grid[row_no]) - 1)
                 row_no += 1
