@@ -117,8 +117,10 @@ def addFiles():
     """
     Adds all files in a folder to a directory
 
-    Uses tkinter fileDialog for the user to specify a directory. All files in this directory are collated into a list, which is then
-    iteratively added to each line.
+    Uses tkinter fileDialog for the user to specify a directory. All files in this directory are collated into a list.
+    Tkinter entry widgets are then added to grid in their own list, representing a horizontal line of cells with each
+    one using a filename from the list collected as it's text. These entries are then placed using the grid geometry
+    manager, creating a table of entries.
     """
     global grid
     #Gets the files to add to the preview
@@ -139,7 +141,8 @@ def addFiles():
             grid[row][0].insert(0, eachFile)
             grid[row][0].grid(row = row, column = 0)
             row += 1
-        
+
+        #Makes the necessary changes to the UI to allow work to continue
         fieldBtn['state']=tk.NORMAL
         submitBtn['state']=tk.NORMAL
         importBtn['state']=tk.NORMAL
@@ -149,17 +152,33 @@ def addFiles():
 
 
 def openFile():
+    """
+    Allows the user to specify a metadata file to open, reads in the file, then
+    displays it's contents in the table
+
+    Uses tkinter's fileDialog package to get a valid text file to open. Using
+    python's csv library and by specifying a tab as a delimiter, this file can
+    be read. For each line in the file, a list is added to grid, and a new entry
+    widget is created for each element in the file. These are then placed in the
+    table ins the same respective position as in the files
+
+    """
     global grid
     filePath = fd.askopenfilename(filetypes=(("Metadata file", "*.txt"),))
+    #Ensures the filepath provided is valid
     if filePath != '':
         preview.grid_forget()
         grid = []
+        #Reads in the metadata file to edit
         with open(filePath) as file:
             tsv_file = csv.reader(file, delimiter="\t")
             row_no = 0
+            #Created a representation of a line
             for line in tsv_file:
                 grid.append([])
                 field_no = 0
+                #Creates an entry widget containing the data element and places
+                #it in the table
                 for field in line:
                     grid[row_no].append(tk.Entry(master = entry_frame))
                     grid[row_no][field_no].insert(0, field)
@@ -168,6 +187,7 @@ def openFile():
 
                 row_no += 1
 
+        #Updates the UI accordingly
         fieldBtn['state']=tk.NORMAL
         submitBtn['state']=tk.NORMAL
         importBtn['state']=tk.NORMAL
@@ -176,22 +196,27 @@ def openFile():
         adjustScrollRegion()
 
 
-
-"""
-Adds a new field to the grid
-
-Appends a new entry containing the field name to the first line and the default value to subsequent lists.
-These entries are then added to the preview frame using the grid method in the position corresponding to
-it's location in the 2d list
-"""
 def addField():
+    """
+    Adds a new field to the grid
+
+    Appends a new entry containing the field name to the first list and the default value to subsequent lists.
+    These entries are then added to the preview frame using the grid method in the position corresponding to
+    it's location in the 2d list
+    """
+    #Gets the values to use to create the field and clears the entry widgets
     field = fieldName.get()
     default = fieldDefault.get()
     fieldName.delete(0, tk.END)
     fieldDefault.delete(0, tk.END)
+
+    #Adds a entry widget for the new field header to the first list
     grid[0].append(tk.Entry(master = entry_frame))
     grid[0][-1].insert(0, 'ATTRIBUTE_'+field)
     grid[0][-1].grid(row=0, column = len(grid[0])-1)
+
+    #Adds an entry widget to the table in all
+    #subsequent rows containing the default value 
     row_no = 1
     for each_line in range(len(grid)-1):
         grid[row_no].append(tk.Entry(master = entry_frame))
@@ -203,6 +228,15 @@ def addField():
 
 
 def submit():
+    """
+    Creates an output text file from the table supplied by the user.
+
+    Uses a filedialog to determine the filepath where the output file
+    will be created. The filepath is vaidated to ensure it has the
+    correct file extension, and if it is not suitable the correct file
+    extension is added. 
+
+    """
     path = fd.asksaveasfilename(defaultextension=".txt", filetypes=(("text file", "*.txt"),))
     #Ensures a valid path has been selected, and that the user hasn't clicked cancel
     if path != '':
@@ -211,8 +245,11 @@ def submit():
             path = path[0:path.find('.')]
             path += '.txt'
 
+            #Creates a file to write into
             writeFile = open(path, 'w')
             for each_line in grid:
+                #Writes each element in each line to the file. Where the element is the start
+                #of the new line, no tab is added otherwise a tab is added before every element
                 new_line = True
                 for each_field in each_line:
                     if new_line == True:
@@ -225,6 +262,8 @@ def submit():
                 writeFile.write('\n')
 
             writeFile.close()
+
+            #Creates a popup window to let the user know that their file has successfully been saved
             feedbackWindow = tk.Tk()
             feedbackWindow.title('File saved')
             label = tk.Label(feedbackWindow, text = 'File saved successfully')
@@ -234,14 +273,14 @@ def submit():
             feedbackWindow.mainloop()
             
 
-"""
-Reads in a yaml file and adds the fields it contains to the preview
-
-User selects a file, which is then parsed to get two lists containing the names
-and default values of each field. These two lists are then iterated through to
-add all the fields to the grid in the same manner as addFiles()
-"""
 def importConfig():
+    """
+    Reads in a yaml file and adds the fields it contains to the preview
+
+    User selects a file, which is then parsed to get two lists containing the names
+    and default values of each field. These two lists are then iterated through to
+    add all the fields to the grid in the same manner as addFiles()
+    """
     #User selects config file
     configPath = fd.askopenfilename(filetypes=(("YAML file", "*.yaml"),))
     if configPath != '':
@@ -251,6 +290,8 @@ def importConfig():
     
         names = []
         values = []
+        #Iterates through each entry in the config file, adds
+        #each element in each entry to the lists as a string
         for each_field in data['fields']:
             if type(each_field['Name']) != str:
                 names.append(str(each_field['Name']))
@@ -262,14 +303,16 @@ def importConfig():
             else:
                 values.append(each_field['Default'])
             
-        #Preview is updated according to config file
         for each_field in range(len(names)):
+            #Creates an entry widget for the field name in the first list in grid
             field = names[each_field]
             default = values[each_field]
             grid[0].append(tk.Entry(master = entry_frame))
             grid[0][-1].insert(0, 'ATTRIBUTE_'+field)
             grid[0][-1].grid(row=0, column = len(grid[0])-1)
             row_no = 1
+            #Creates entry widgets in all subsequent lists in grid containing
+            #the default value provided
             for each_line in range(len(grid)-1):
                 grid[row_no].append(tk.Entry(master = entry_frame))
                 grid[row_no][-1].insert(0, default)
@@ -318,18 +361,23 @@ instructionsBtn = tk.Button(
     command = showInstructions
     )
 
-preview.grid(row=0, column=0)
+#Places all the frames in the correct position
 toolbar_frame.grid(row=0, column=0, sticky = 'NESW')
 preview_frame.grid(row=1, column=0, sticky='NESW')
 grid_canvas.grid(row=0, column=0)
 grid_canvas.grid_rowconfigure(0, weight=1)
 grid_canvas.grid_columnconfigure(0, weight=1)
+lower_frame.grid(row=2, column=0)
+side_frame.grid(row=1, column=1)
+
+#Places widgets in the root window
+preview.grid(row=0, column=0)
+logo_label.grid(row=2, column=1, sticky='NESW')
+
+#Configures widgets as necessary
 grid_canvas.configure(yscrollcommand = vscroll.set)
 grid_canvas.configure(xscrollcommand = hscroll.set)
 preview_frame.grid_propagate(False)
-lower_frame.grid(row=2, column=0)
-side_frame.grid(row=1, column=1)
-logo_label.grid(row=2, column=1, sticky='NESW')
 
 #lower frame
 importBtn.grid(row=1, column=0)
