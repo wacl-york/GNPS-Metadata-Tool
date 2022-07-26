@@ -2,13 +2,11 @@ import tkinter as tk
 from tkinter import filedialog as fd
 from os import listdir
 from os.path import isfile, join
-import xml.etree.ElementTree as ET
 from PIL import ImageTk, Image
 import yaml
 import csv
 
 window = tk.Tk()
-#window.configure(background='black')
 window.geometry('1200x700')
 window.title('Metadata Tool')
 
@@ -50,8 +48,6 @@ entry_frame = tk.Frame(
     master = grid_canvas
     )
 
-grid_canvas.create_window((0, 0), window=entry_frame, anchor='nw')
-
 vscroll = tk.Scrollbar(master = preview_frame, orient = 'vertical', command = grid_canvas.yview)
 hscroll = tk.Scrollbar(master = preview_frame, orient = 'horizontal', command = grid_canvas.xview)
 preview = tk.Label(master = preview_frame, text = 'Select one of the buttons above to start creating a metadata file', anchor = 'nw')
@@ -59,8 +55,6 @@ fieldName = tk.Entry(master=side_frame)
 fieldDefault = tk.Entry(side_frame)
 fieldNameLabel = tk.Label(text='Field to add', master=side_frame)
 fieldDefaultLabel = tk.Label(text='Default value', master=side_frame)
-preview.grid(row=0, column=0)
-#entry_frame.bind("<Configure>", grid_canvas.configure(scrollregion=grid_canvas.bbox("all")))
 
 #Opens logo in a PIL format so it can be resized
 logo = Image.open('wacl.png')
@@ -68,15 +62,27 @@ logo_resized = logo.resize((350, 250))
 #Resized photo is used to create a new object tkinter will accept
 logo_photo_image = ImageTk.PhotoImage(logo_resized)
 logo_label = tk.Label(master = window, image = logo_photo_image)
+#Creates a window for the cells in the table to be displayed on
+grid_canvas.create_window((0, 0), window=entry_frame, anchor='nw')
 
-noOfFiles = 0
 grid = [[]]
 
 def adjustScrollRegion():
+    """
+    Updates grid_canvas so that users can scroll through the entirety of the available cells
+
+    Sets the canvas dimensions to accurately reflect the cells present in the grid, so that
+    the scrollbars are placed next to the cells. The scroll region is also adjusted to
+    include all of the cells.
+    """
+
+    #Needed to keep the canvas up to date with the latest changes
     entry_frame.update_idletasks()
-    
+
+    #Determines the correct dimensions to assign to the canvas based on the cells included,
+    #maxing out at set values.
     if len(grid[0]) > 4:
-        #Constant assigned from experience
+        #Constant 
         canvas_width = 700
     else:
         canvas_width = len((grid[0]) * grid[0][0].winfo_width())
@@ -85,67 +91,19 @@ def adjustScrollRegion():
         canvas_height = 200
     else:
         canvas_height = len(grid) * grid[0][0].winfo_height()
-    
+
+    #Reconfigures grid_canvas accordingly
     grid_canvas.config(scrollregion=grid_canvas.bbox("all"), width = canvas_width, height = canvas_height)
-    
-    
 
 
-"""
-Finds the index before the end of the line to determine where to insert new characters
-
-Iterates through the given line, character by character until it finds a '\n' character,
-then returns the index of the character before it
-
-Parameters:
-
-    line: Line in the text box to find the index with
-
-Returns:
-
-    index: Index to insert characters into
-"""
-def getEnd(line):
-    completed = False
-    char = 0
-    current = str(line) + '.' + str(char)
-    #Iterates through the line to find the eol character
-    while completed == False:
-        if preview.get(current) == '\n':
-            completed == True
-            return char
-        else:
-            char += 1
-            current = str(line) + '.' + str(char)
-
-
-"""
-Returns the number of lines currently in the preview
-
-Counts the number of EOL characters to determine how many lines there are. If the text doesn't end with an EOL character,
-that means the user has added another line by themselves without an EOL character, so another line is counted.
-
-Returns:
-
-    lines: No of lines in the text
-"""
-def getLineNo():
-    text = preview.get('1.0', tk.END)
-    lines = text.count('\n')
-    #Accounts for the possibility that the user has added a line in the preview that doesn't have an EOL character at the end
-    if text[-1] != '\n':
-        lines += 1
-    
-    return lines
-
-""" 
-Displays instructions for using the tool in a popup window
-
-Upon clicking the "Help" button, a new window is created, inside of which is a label containing the instructions,
-and a button, which will close the window when clicked.
-
-"""
 def showInstructions():
+    """ 
+    Displays instructions for using the tool in a popup window
+
+    Upon clicking the "Help" button, a new window is created, inside of which is a label containing the instructions,
+    and a button, which will close the window when clicked.
+
+    """
     popupWindow = tk.Tk()
     popupWindow.title('Instructions')
     label = tk.Label(popupWindow, text = 'Instructions for use: \n 1. Put all the files you wish to create metadata \n for into one folder, then select this folder \n 2. The files within this folder will appear in the preview. \n From here you can add fields by either \n importing a config file containing all \n the fields. Alternatively you can add fields \n individually by entering the name of the field  \n and optionally a default value \n 3. From here you can modify the values as necessary \n 4. Click the "Save as .txt" button to finalise the folder')
@@ -155,16 +113,14 @@ def showInstructions():
     popupWindow.mainloop()
 
 
-"""
-Adds all files in a folder to a directory
-
-Uses tkinter fileDialog for the user to specify a directory. All files in this directory are collated into a list, which is then
-iteratively added to each line.
-"""
 def addFiles():
-    global noOfFiles
+    """
+    Adds all files in a folder to a directory
+
+    Uses tkinter fileDialog for the user to specify a directory. All files in this directory are collated into a list, which is then
+    iteratively added to each line.
+    """
     global grid
-    noOfFiles = 0
     #Gets the files to add to the preview
     directoryToAdd = fd.askdirectory()
     if directoryToAdd != ():
@@ -276,18 +232,7 @@ def submit():
             closeButton = tk.Button(feedbackWindow, text = 'Close', command = feedbackWindow.destroy)
             closeButton.pack()
             feedbackWindow.mainloop()
-                
-                        
-                
-                    
-
-        """
-        fileContents = preview.get('1.0', tk.END)
-        fileContents = fileContents.replace(',', '\t')
-        writeFile = open(path, 'w')
-        writeFile.write(fileContents)
-        writeFile.close()
-        """
+            
 
 """
 Reads in a yaml file and adds the fields it contains to the preview
@@ -332,19 +277,6 @@ def importConfig():
                 row_no += 1
 
         adjustScrollRegion()
-                
-        """
-        insertIndex = getEnd(1)
-        locationToInsert = '1.' + str(insertIndex)
-        preview.insert(locationToInsert, ', ATTRIBUTE_' + field)
-        #Adds the default value to the end of each line except the first
-
-        #There needs to be two less lines due to the lack of zero-indexing and the first line being irrelevant here
-        for each_line in range(preview.get('1.0', tk.END).count('\n') - 2):
-            lineNo = each_line + 2 #Similiarly, the working line is increased by two to ensure the first line is skipped
-            insertIndex = getEnd(lineNo)
-            preview.insert(str(lineNo) + '.' + str(insertIndex), ', ' + default)
-        """
 
 
 filesBtn = tk.Button(
@@ -386,6 +318,7 @@ instructionsBtn = tk.Button(
     command = showInstructions
     )
 
+preview.grid(row=0, column=0)
 toolbar_frame.grid(row=0, column=0, sticky = 'NESW')
 preview_frame.grid(row=1, column=0, sticky='NESW')
 grid_canvas.grid(row=0, column=0)
@@ -394,8 +327,6 @@ grid_canvas.grid_columnconfigure(0, weight=1)
 grid_canvas.configure(yscrollcommand = vscroll.set)
 grid_canvas.configure(xscrollcommand = hscroll.set)
 preview_frame.grid_propagate(False)
-#vscroll.grid(row=0, column=1, sticky = 'NS')
-#hscroll.grid(row=1, column=0, sticky = 'EW')
 lower_frame.grid(row=2, column=0)
 side_frame.grid(row=1, column=1)
 logo_label.grid(row=2, column=1, sticky='NESW')
@@ -415,7 +346,5 @@ fieldBtn.grid(row=4, column=0)
 filesBtn.grid(row=0, column=0)
 openBtn.grid(row=0, column=1)
 instructionsBtn.grid(row=0, column=2)
-
-#imageLabel.pack()
 
 window.mainloop()
