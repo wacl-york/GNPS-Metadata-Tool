@@ -155,7 +155,8 @@ def addFiles():
     global grid
     # Gets the files to add to the preview
     directoryToAdd = fd.askdirectory()
-    if directoryToAdd != ():
+    #Checks that the directory provided is valid
+    if len(directoryToAdd) > 1:
         grid = [[]]
         preview.grid_forget()
         filesToAdd = [file for file in listdir(directoryToAdd)
