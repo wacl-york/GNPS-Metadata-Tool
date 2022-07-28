@@ -120,6 +120,7 @@ def showInstructions():
 
     """
     popupWindow = tk.Tk()
+    popupWindow.geometry('450x300')
     popupWindow.title('Instructions')
     label = tk.Label(popupWindow, text="""Instructions for use:
 1. Put all the files you wish to create metadata
@@ -130,13 +131,20 @@ config file containing all the fields. Alternatively you
 can add fields individually by entering the name of
 the field and optionally a default value
 3. From here you can modify the values as necessary
-4. Click the "Save as .txt" button to finalise the folder""")
+4. Click the "Save as .txt" button to finalise the folder
+If you encounter any issues you can report them at""")
     label.pack()
-    closeButton = tk.Button(
-        master=popupWindow,
-        text='Close',
-        command=popupWindow.destroy
-    )
+    link = tk.Text(popupWindow, height = 1)
+    link.insert(1.0, 'https://github.com/wacl-york/GNPS-Metadata-Tool/issues')
+    link.pack()
+
+    def focusText(event):
+        link.config(state='normal')
+        link.focus()
+        link.config(state='disabled')
+    
+    link.bind('<Button-1>', focusText)
+    closeButton = tk.Button(popupWindow, text = 'Close', command = popupWindow.destroy)
     closeButton.pack()
     popupWindow.mainloop()
 
