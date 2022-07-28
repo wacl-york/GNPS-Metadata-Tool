@@ -150,7 +150,17 @@ def showInstructions():
     popupWindow = tk.Tk()
     popupWindow.geometry('450x300')
     popupWindow.title('Instructions')
-    label = tk.Label(popupWindow, text = 'Instructions for use: \n 1. Put all the files you wish to create metadata \n for into one folder, then select this folder \n 2. The files within this folder will appear in the preview. \n From here you can add fields by either \n importing a config file containing all \n the fields. Alternatively you can add fields \n individually by entering the name of the field  \n and optionally a default value \n 3. From here you can modify the values as necessary \n 4. Click the "Save as .txt" button to finalise the folder. \n If you encounter any issues you can report them at \n')
+    label = tk.Label(popupWindow, text="""Instructions for use:
+1. Put all the files you wish to create metadata
+for into one folder, then select this folder
+2. The files within this folder will appear in the preview.
+From here you can add fields by either importing a
+config file containing all the fields. Alternatively you
+can add fields individually by entering the name of
+the field and optionally a default value
+3. From here you can modify the values as necessary
+4. Click the "Save as .txt" button to finalise the folder
+If you encounter any issues you can report them at""")
     label.pack()
     link = tk.Text(popupWindow, height = 1)
     link.insert(1.0, 'https://github.com/wacl-york/GNPS-Metadata-Tool/issues')
