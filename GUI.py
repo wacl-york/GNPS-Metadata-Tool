@@ -282,15 +282,15 @@ def submit():
     extension is added.
 
     """
-    path = fd.asksaveasfilename(defaultextension=".txt",
-                                filetypes=(("text file", "*.txt"),))
+    path = fd.asksaveasfilename(defaultextension=".tsv",
+                                filetypes=(("tab-seperated file", "*.tsv"),))
     # Ensures a valid path has been selected, and that
     # the user hasn't clicked cancel
     if path != '':
         # Ensures the file is saved as a .txt, rather than anything else
         if path.find('.') != -1:
             path = path[0:path.find('.')]
-            path += '.txt'
+            path += '.tsv'
 
             # Creates a file to write into
             writeFile = open(path, 'w')
@@ -398,7 +398,7 @@ fieldBtn = tk.Button(
     )
 
 submitBtn = tk.Button(
-    text='Save as .txt',
+    text='Save as .tsv',
     command=submit,
     state='disabled',
     master=lower_frame
