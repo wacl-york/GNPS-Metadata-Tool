@@ -294,20 +294,28 @@ def submit():
 
             # Creates a file to write into
             writeFile = open(path, 'w')
+            index = ''
             for each_line in grid:
                 # Writes each element in each line to the file.
                 # Where the element is the start of the new line, no tab is
                 # added otherwise a tab is added before every element
                 new_line = True
                 for each_field in each_line:
+                    #Adds the index to the start of the line
                     if new_line:
                         new_line = False
-                        writeFile.write(each_field.get())
-                    else:
-                        writeFile.write('\t')
-                        writeFile.write(each_field.get())
+                        writeFile.write(str(index))
+                        
+                    writeFile.write('\t')
+                    writeFile.write(each_field.get())
 
                 writeFile.write('\n')
+
+                # Changes the value of index for the next line as appropriate
+                if index == '':
+                    index = 0
+                else:
+                    index += 1
 
             writeFile.close()
 
