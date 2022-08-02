@@ -55,8 +55,8 @@ hscroll = tk.Scrollbar(
 )
 
 preview = tk.Label(master=preview_frame,
-                   text='Select one of the buttons above to start \
-                   creating a metadata file',
+                   text="""Select one of the buttons above to start creating
+a metadata file""",
                    anchor='nw'
                    )
 
@@ -134,7 +134,7 @@ the field and optionally a default value
 4. Click the "Save as .txt" button to finalise the folder
 If you encounter any issues you can report them at""")
     label.pack()
-    link = tk.Text(popupWindow, height = 1)
+    link = tk.Text(popupWindow, height=1)
     link.insert(1.0, 'https://github.com/wacl-york/GNPS-Metadata-Tool/issues')
     link.pack()
 
@@ -142,9 +142,12 @@ If you encounter any issues you can report them at""")
         link.config(state='normal')
         link.focus()
         link.config(state='disabled')
-    
+
     link.bind('<Button-1>', focusText)
-    closeButton = tk.Button(popupWindow, text = 'Close', command = popupWindow.destroy)
+    closeButton = tk.Button(popupWindow,
+                            text='Close',
+                            command=popupWindow.destroy
+                            )
     closeButton.pack()
     popupWindow.mainloop()
 
@@ -163,7 +166,7 @@ def addFiles():
     global grid
     # Gets the files to add to the preview
     directoryToAdd = fd.askdirectory()
-    #Checks that the directory provided is valid
+    # Checks that the directory provided is valid
     if len(directoryToAdd) > 1:
         grid = [[]]
         preview.grid_forget()
