@@ -308,7 +308,7 @@ def submit():
                         writeFile.write(each_field.get())
                     else:
                         writeFile.write('\t')
-                        writeFile.write(each_field.get())              
+                        writeFile.write(each_field.get())
 
                 # Prevents a new line from being added at the end of the file
                 if line_number < len(grid):
