@@ -295,7 +295,9 @@ def submit():
             # Creates a file to write into
             writeFile = open(path, 'w')
             index = ''
+            line_number = 0
             for each_line in grid:
+                line_number += 1
                 # Writes each element in each line to the file.
                 # Where the element is the start of the new line, no tab is
                 # added otherwise a tab is added before every element
@@ -309,7 +311,9 @@ def submit():
                     writeFile.write('\t')
                     writeFile.write(each_field.get())
 
-                writeFile.write('\n')
+                # Prevents a new line from being added at the end of the file
+                if line_number < len(grid):
+                    writeFile.write('\n')
 
                 # Changes the value of index for the next line as appropriate
                 if index == '':
