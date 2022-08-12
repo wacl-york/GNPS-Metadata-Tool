@@ -303,13 +303,12 @@ def submit():
                 # added otherwise a tab is added before every element
                 new_line = True
                 for each_field in each_line:
-                    #Adds the index to the start of the line
                     if new_line:
                         new_line = False
-                        writeFile.write(str(index))
-                        
-                    writeFile.write('\t')
-                    writeFile.write(each_field.get())
+                        writeFile.write(each_field.get())
+                    else:
+                        writeFile.write('\t')
+                        writeFile.write(each_field.get())              
 
                 # Prevents a new line from being added at the end of the file
                 if line_number < len(grid):
