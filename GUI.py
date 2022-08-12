@@ -282,19 +282,22 @@ def submit():
     extension is added.
 
     """
-    path = fd.asksaveasfilename(defaultextension=".txt",
-                                filetypes=(("text file", "*.txt"),))
+    path = fd.asksaveasfilename(defaultextension=".tsv",
+                                filetypes=(("tab-seperated file", "*.tsv"),))
     # Ensures a valid path has been selected, and that
     # the user hasn't clicked cancel
     if path != '':
         # Ensures the file is saved as a .txt, rather than anything else
         if path.find('.') != -1:
             path = path[0:path.find('.')]
-            path += '.txt'
+            path += '.tsv'
 
             # Creates a file to write into
             writeFile = open(path, 'w')
+            index = ''
+            line_number = 0
             for each_line in grid:
+                line_number += 1
                 # Writes each element in each line to the file.
                 # Where the element is the start of the new line, no tab is
                 # added otherwise a tab is added before every element
@@ -307,7 +310,15 @@ def submit():
                         writeFile.write('\t')
                         writeFile.write(each_field.get())
 
-                writeFile.write('\n')
+                # Prevents a new line from being added at the end of the file
+                if line_number < len(grid):
+                    writeFile.write('\n')
+
+                # Changes the value of index for the next line as appropriate
+                if index == '':
+                    index = 0
+                else:
+                    index += 1
 
             writeFile.close()
 
@@ -398,7 +409,7 @@ fieldBtn = tk.Button(
     )
 
 submitBtn = tk.Button(
-    text='Save as .txt',
+    text='Save as .tsv',
     command=submit,
     state='disabled',
     master=lower_frame
