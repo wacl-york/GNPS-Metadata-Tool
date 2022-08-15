@@ -210,7 +210,7 @@ def openFile():
     """
     global grid
     global filepath
-    filePath = fd.askopenfilename(filetypes=(("Metadata file", "*.txt"),))
+    filePath = fd.askopenfilename(filetypes=(("Metadata file", "*.tsv"),))
     # Ensures the filepath provided is valid
     if filePath != '':
         preview.grid_forget()
