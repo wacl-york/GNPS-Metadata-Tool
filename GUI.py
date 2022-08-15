@@ -75,6 +75,7 @@ logo_label = tk.Label(master=window, image=logo_photo_image)
 grid_canvas.create_window((0, 0), window=entry_frame, anchor='nw')
 
 grid = [[]]
+filepath = ''
 
 
 def adjustScrollRegion():
@@ -93,7 +94,6 @@ def adjustScrollRegion():
     # Determines the correct dimensions to assign to the canvas
     # based on the cells included, maxing out at set values.
     if len(grid[0]) > 4:
-        # Constant
         canvas_width = 700
     else:
         canvas_width = len((grid[0]) * grid[0][0].winfo_width())
@@ -164,14 +164,15 @@ def addFiles():
     of entries.
     """
     global grid
+    global filepath
     # Gets the files to add to the preview
-    directoryToAdd = fd.askdirectory()
+    filepath = fd.askdirectory()
     # Checks that the directory provided is valid
-    if len(directoryToAdd) > 1:
+    if len(filepath) > 1:
         grid = [[]]
         preview.grid_forget()
-        filesToAdd = [file for file in listdir(directoryToAdd)
-                      if isfile(join(directoryToAdd, file))]
+        filesToAdd = [file for file in listdir(filepath)
+                      if isfile(join(filepath, file))]
         grid[0].append(tk.Entry(master=entry_frame))
         grid[0][0].insert(0, 'filename')
         grid[0][0].grid(row=0, column=0)
@@ -208,7 +209,8 @@ def openFile():
 
     """
     global grid
-    filePath = fd.askopenfilename(filetypes=(("Metadata file", "*.txt"),))
+    global filepath
+    filePath = fd.askopenfilename(filetypes=(("Metadata file", "*.tsv"),))
     # Ensures the filepath provided is valid
     if filePath != '':
         preview.grid_forget()
@@ -237,6 +239,7 @@ def openFile():
         importBtn['state'] = tk.NORMAL
         vscroll.grid(row=0, column=1, sticky='NS')
         hscroll.grid(row=1, column=0, sticky='EW')
+        filepath = filepath[0:filepath.rfind('/')]
         adjustScrollRegion()
 
 
@@ -282,8 +285,11 @@ def submit():
     extension is added.
 
     """
+    global filepath
+    
     path = fd.asksaveasfilename(defaultextension=".tsv",
-                                filetypes=(("tab-seperated file", "*.tsv"),))
+                                filetypes=(("tab-seperated file", "*.tsv"),),
+                                initialdir=filepath)
     # Ensures a valid path has been selected, and that
     # the user hasn't clicked cancel
     if path != '':
