@@ -240,7 +240,25 @@ def openFile():
         vscroll.grid(row=0, column=1, sticky='NS')
         hscroll.grid(row=1, column=0, sticky='EW')
         filepath = filepath[0:filepath.rfind('/')]
-        adjustScrollRegion()
+        try:
+            adjustScrollRegion()
+        except:
+            grid = []
+            # Creates a popup window to let the user know that
+            # their file has successfully been saved
+            errorWindow = tk.Tk()
+            errorWindow.title('Error')
+            label = tk.Label(errorWindow, text='Your file is in the wrong format')
+            label.pack()
+
+            closeButton = tk.Button(errorWindow,
+                                    text='Close',
+                                    command=errorWindow.destroy
+                                    )
+
+            closeButton.pack()
+            errorWindow.mainloop()
+            
 
 
 def addField():
