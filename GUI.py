@@ -258,7 +258,6 @@ def openFile():
 
             closeButton.pack()
             errorWindow.mainloop()
-            
 
 
 def addField():
