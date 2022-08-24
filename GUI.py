@@ -5,6 +5,8 @@ from os.path import isfile, join
 from PIL import ImageTk, Image
 import yaml
 import csv
+import sys
+import os
 
 window = tk.Tk()
 window.geometry('1200x700')
@@ -65,8 +67,14 @@ fieldDefault = tk.Entry(side_frame)
 fieldNameLabel = tk.Label(text='Field to add', master=side_frame)
 fieldDefaultLabel = tk.Label(text='Default value', master=side_frame)
 
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
+    return os.path.join(base_path, relative_path)
+
 # Opens logo in a PIL format so it can be resized
-logo = Image.open('wacl.png')
+image_path = resource_path('wacl.png')
+logo = Image.open(image_path)
 logo_resized = logo.resize((350, 250))
 # Resized photo is used to create a new object tkinter will accept
 logo_photo_image = ImageTk.PhotoImage(logo_resized)
