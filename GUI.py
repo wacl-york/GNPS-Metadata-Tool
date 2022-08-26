@@ -9,14 +9,15 @@ import sys
 import os
 
 window = tk.Tk()
-window.geometry('1200x700')
+window.geometry('1200x500')
 window.title('Metadata Tool')
 
-window.columnconfigure(0, weight=1, minsize=200)
+window.columnconfigure(0, weight=1, minsize=750)
 window.columnconfigure(1, weight=0, minsize=400)
 
-for r in range(2):
-    window.rowconfigure(r, weight=1, minsize=50)
+window.rowconfigure(0, weight=0, minsize=30)
+window.rowconfigure(1, weight=1, minsize=50)
+window.rowconfigure(2, weight=1, minsize=50)
 
 lower_frame = tk.Frame(
     master=window
