@@ -30,8 +30,7 @@ preview_frame = tk.Frame(
 )
 
 toolbar_frame = tk.Frame(
-    master=window,
-    height=20
+    master=window
 )
 
 grid_canvas = tk.Canvas(
@@ -439,7 +438,7 @@ instructionsBtn = tk.Button(
 # Places all the frames in the correct position
 toolbar_frame.grid(row=0, column=0, sticky='NESW')
 preview_frame.grid(row=1, column=0, sticky='NESW')
-grid_canvas.grid(row=0, column=0, sticky='NS')
+grid_canvas.grid(row=0, column=0)
 grid_canvas.grid_rowconfigure(0, weight=1)
 grid_canvas.grid_columnconfigure(0, weight=1)
 lower_frame.grid(row=2, column=0)
