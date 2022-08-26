@@ -260,10 +260,11 @@ def addField():
     the preview frame using the grid method in the position corresponding to
     it's location in the 2d list
     """
-    # Gets the values to use to create the field and clears the entry widgets
+    # Validates the field name entered
     field = fieldName.get()
     if field != '':
         default = fieldDefault.get()
+        # Clears the entry widgets
         fieldName.delete(0, tk.END)
         fieldDefault.delete(0, tk.END)
 
