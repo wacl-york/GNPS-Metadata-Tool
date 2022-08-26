@@ -278,27 +278,29 @@ def addField():
     the preview frame using the grid method in the position corresponding to
     it's location in the 2d list
     """
-    # Gets the values to use to create the field and clears the entry widgets
+    # Validates the field name entered
     field = fieldName.get()
-    default = fieldDefault.get()
-    fieldName.delete(0, tk.END)
-    fieldDefault.delete(0, tk.END)
+    if field != '':
+        default = fieldDefault.get()
+        # Clears the entry widgets
+        fieldName.delete(0, tk.END)
+        fieldDefault.delete(0, tk.END)
 
-    # Adds a entry widget for the new field header to the first list
-    grid[0].append(tk.Entry(master=entry_frame))
-    grid[0][-1].insert(0, 'ATTRIBUTE_'+field)
-    grid[0][-1].grid(row=0, column=len(grid[0])-1)
+        # Adds a entry widget for the new field header to the first list
+        grid[0].append(tk.Entry(master=entry_frame))
+        grid[0][-1].insert(0, 'ATTRIBUTE_'+field)
+        grid[0][-1].grid(row=0, column=len(grid[0])-1)
 
-    # Adds an entry widget to the table in all
-    # subsequent rows containing the default value
-    row_no = 1
-    for each_line in range(len(grid)-1):
-        grid[row_no].append(tk.Entry(master=entry_frame))
-        grid[row_no][-1].insert(0, default)
-        grid[row_no][-1].grid(row=row_no, column=len(grid[row_no]) - 1)
-        row_no += 1
+        # Adds an entry widget to the table in all
+        # subsequent rows containing the default value
+        row_no = 1
+        for each_line in range(len(grid)-1):
+            grid[row_no].append(tk.Entry(master=entry_frame))
+            grid[row_no][-1].insert(0, default)
+            grid[row_no][-1].grid(row=row_no, column=len(grid[row_no]) - 1)
+            row_no += 1
 
-    adjustScrollRegion()
+        adjustScrollRegion()
 
 
 def submit():
