@@ -68,10 +68,13 @@ fieldDefault = tk.Entry(side_frame)
 fieldNameLabel = tk.Label(text='Field to add', master=side_frame)
 fieldDefaultLabel = tk.Label(text='Default value', master=side_frame)
 
+
 def resource_path(relative_path):
     """ Get absolute path to resource, works for dev and for PyInstaller """
-    base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
+    base_path = getattr(sys,
+                        '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
     return os.path.join(base_path, relative_path)
+
 
 # Opens logo in a PIL format so it can be resized
 image_path = resource_path('wacl.png')
@@ -257,7 +260,8 @@ def openFile():
             # their file has successfully been saved
             errorWindow = tk.Tk()
             errorWindow.title('Error')
-            label = tk.Label(errorWindow, text='Your file is in the wrong format')
+            label = tk.Label(errorWindow,
+                             text='Your file is in the wrong format')
             label.pack()
 
             closeButton = tk.Button(errorWindow,
@@ -314,7 +318,7 @@ def submit():
 
     """
     global filepath
-    
+
     path = fd.asksaveasfilename(defaultextension=".tsv",
                                 filetypes=(("tab-seperated file", "*.tsv"),),
                                 initialdir=filepath)
