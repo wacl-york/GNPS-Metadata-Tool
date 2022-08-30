@@ -9,14 +9,15 @@ import sys
 import os
 
 window = tk.Tk()
-window.geometry('1200x700')
+window.geometry('1200x500')
 window.title('Metadata Tool')
 
-window.columnconfigure(0, weight=1, minsize=200)
+window.columnconfigure(0, weight=1, minsize=750)
 window.columnconfigure(1, weight=0, minsize=400)
 
-for r in range(2):
-    window.rowconfigure(r, weight=1, minsize=50)
+window.rowconfigure(0, weight=0, minsize=30)
+window.rowconfigure(1, weight=1, minsize=50)
+window.rowconfigure(2, weight=1, minsize=50)
 
 lower_frame = tk.Frame(
     master=window
@@ -248,7 +249,24 @@ def openFile():
         vscroll.grid(row=0, column=1, sticky='NS')
         hscroll.grid(row=1, column=0, sticky='EW')
         filepath = filepath[0:filepath.rfind('/')]
-        adjustScrollRegion()
+        try:
+            adjustScrollRegion()
+        except:
+            grid = []
+            # Creates a popup window to let the user know that
+            # their file has successfully been saved
+            errorWindow = tk.Tk()
+            errorWindow.title('Error')
+            label = tk.Label(errorWindow, text='Your file is in the wrong format')
+            label.pack()
+
+            closeButton = tk.Button(errorWindow,
+                                    text='Close',
+                                    command=errorWindow.destroy
+                                    )
+
+            closeButton.pack()
+            errorWindow.mainloop()
 
 
 def addField():
@@ -260,27 +278,29 @@ def addField():
     the preview frame using the grid method in the position corresponding to
     it's location in the 2d list
     """
-    # Gets the values to use to create the field and clears the entry widgets
+    # Validates the field name entered
     field = fieldName.get()
-    default = fieldDefault.get()
-    fieldName.delete(0, tk.END)
-    fieldDefault.delete(0, tk.END)
+    if field != '':
+        default = fieldDefault.get()
+        # Clears the entry widgets
+        fieldName.delete(0, tk.END)
+        fieldDefault.delete(0, tk.END)
 
-    # Adds a entry widget for the new field header to the first list
-    grid[0].append(tk.Entry(master=entry_frame))
-    grid[0][-1].insert(0, 'ATTRIBUTE_'+field)
-    grid[0][-1].grid(row=0, column=len(grid[0])-1)
+        # Adds a entry widget for the new field header to the first list
+        grid[0].append(tk.Entry(master=entry_frame))
+        grid[0][-1].insert(0, 'ATTRIBUTE_'+field)
+        grid[0][-1].grid(row=0, column=len(grid[0])-1)
 
-    # Adds an entry widget to the table in all
-    # subsequent rows containing the default value
-    row_no = 1
-    for each_line in range(len(grid)-1):
-        grid[row_no].append(tk.Entry(master=entry_frame))
-        grid[row_no][-1].insert(0, default)
-        grid[row_no][-1].grid(row=row_no, column=len(grid[row_no]) - 1)
-        row_no += 1
+        # Adds an entry widget to the table in all
+        # subsequent rows containing the default value
+        row_no = 1
+        for each_line in range(len(grid)-1):
+            grid[row_no].append(tk.Entry(master=entry_frame))
+            grid[row_no][-1].insert(0, default)
+            grid[row_no][-1].grid(row=row_no, column=len(grid[row_no]) - 1)
+            row_no += 1
 
-    adjustScrollRegion()
+        adjustScrollRegion()
 
 
 def submit():
